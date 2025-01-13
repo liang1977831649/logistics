@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.logistics.mapper.DriverMapper">
+    <insert id="insertDriver">
+        insert into driver value(#{id},#{name},#{phone},#{sex},#{status},#{areaId},now())
+    </insert>
+    <update id="updateDriver">
+        update driver
+        <set>
+            <if test="name!=null and name!=''">
+                name=#{name}
+            </if>
+            <if test="phone!=null and phone!=''">
+                ,phone=#{phone}
+            </if>
+            <if test="status!=null and status!=''">
+                ,status=#{status}
+            </if>
+            <if test="areaId!=null and areaId!=null">
+                ,area_Id=#{areaId}
+            </if>
+            <if test="areaId!=null and areaId!=null">
+                ,sex=#{sex}
+            </if>
+        </set>
+        where id=#{id}
+    </update>
+
+    <select id="selectDriverByAreaId" resultType="com.logistics.entity.Driver">
+        select * from driver
+        <where>
+            area_id=#{areaId}
+            <if test="name!=null and name!=''">
+                and name like concat('%',#{name},'%')
+            </if>
+            <if test="id!=null and id!=''">
+                and id like concat('%',#{id},'%')
+            </if>
+            <if test="status!=null">
+                and status=#{status}
+            </if>
+        </where>
+    </select>
+</mapper>

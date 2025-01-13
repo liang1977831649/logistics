@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.logistics.mapper.UserMapper">
+
+    <insert id="insertUserFroRegister">
+        insert into user(id, password, role, area_id, create_time) value (#{id}, #{password}, #{role}, #{areaId}, now());
+    </insert>
+    <insert id="insertUserForAdd">
+        insert into user value (#{id},#{name},#{password},#{phone},#{userPic},#{sex},#{role},#{areaId},now())
+    </insert>
+    <update id="update">
+        update user
+        <set>
+            <if test="name!=null and name!=''">
+                name=#{name}
+            </if>
+            <if test="phone!=null and phone!=''">
+                ,phone=#{phone}
+            </if>
+            <if test="password!=null and password!=''">
+                ,password=#{password}
+            </if>
+            <if test="sex!=null and (sex==1||sex==0)">
+                ,sex=#{sex}
+            </if>
+            <if test="areaId!=null and area!=''">
+                ,area_id=#{areaId}
+            </if>
+            <if test="userPic!=null and userPic!=''">
+                ,user_pic=#{userPic}
+            </if>
+        </set>
+        where id=#{id};
+    </update>
+    <delete id="deleteUserById">
+        delete  from user where id=#{id};
+    </delete>
+    <select id="selectUserByAreaId" resultType="com.logistics.entity.User">
+        select id, name, phone, user_pic, sex, role, area_id, create_time from user
+        <where>
+            area_id=#{areaId}
+            <if test="name!=null and name!=''">
+                and name like concat('%',#{name},'%')
+            </if>
+            <if test="id!=null and id!=''">
+                and id like concat('%',#{id},'%')
+            </if>
+        </where>
+    </select>
+    <select id="getUserByIdNoPassword" resultType="com.logistics.entity.User">
+        select id, name, phone, user_pic, sex, role, area_id, create_time from user where id=#{id}
+    </select>
+</mapper>
