@@ -5,7 +5,7 @@
 <mapper namespace="com.logistics.mapper.ColdChainCarMapper">
     <insert id="addColdChainCa">
         insert into cold_chain_car(id, name, weight, volume, status, area_id, createTime)
-            value (#{id},#{name},#{weight},#{volume},#{status},#{areaId},now())
+            value (#{id},#{name},#{weight},#{volume},1,#{areaId},now())
     </insert>
     <update id="updateDriver">
         update cold_chain_car
@@ -19,8 +19,14 @@
             <if test="hum!=null ">
                 ,hum=#{hum}
             </if>
+            <if test="curWeight!=null ">
+                ,cur_weight=#{curWeight}
+            </if>
             <if test="weight!=null ">
                 ,weight=#{weight}
+            </if>
+            <if test="curVolume!=null ">
+                ,cur_volume=#{curVolume}
             </if>
             <if test="volume!=null ">
                 ,volume=#{volume}

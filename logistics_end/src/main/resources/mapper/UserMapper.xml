@@ -25,11 +25,11 @@
             <if test="sex!=null and (sex==1||sex==0)">
                 ,sex=#{sex}
             </if>
-            <if test="areaId!=null and area!=''">
-                ,area_id=#{areaId}
-            </if>
             <if test="userPic!=null and userPic!=''">
                 ,user_pic=#{userPic}
+            </if>
+            <if test="areaId!=null and areaId!=''">
+                ,area_id=#{areaId}
             </if>
         </set>
         where id=#{id};

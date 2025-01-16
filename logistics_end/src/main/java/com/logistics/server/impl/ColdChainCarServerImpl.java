@@ -48,8 +48,8 @@ public class ColdChainCarServerImpl implements ColdChainCarServer {
 
         //一旦处于空闲状态，那么温湿度，都会被位置为0
         if(coldChainCar.getStatus()==1){
-            coldChainCar.setHum(0);
-            coldChainCar.setTem(0);
+            coldChainCar.setHum(Float.valueOf(0));
+            coldChainCar.setTem(Float.valueOf(0));
         }
         coldChainCarMapper.updateDriver(coldChainCar);
     }
@@ -62,12 +62,15 @@ public class ColdChainCarServerImpl implements ColdChainCarServer {
         }
         String areaId = (String)((HashMap<String, Object>) ThreadLocalUtils.get()).get("areaId");
         coldChainCar.setAreaId(areaId);
-        coldChainCar.setStatus(1);
         coldChainCarMapper.addColdChainCa(coldChainCar);
     }
 
     @Override
     public void deleteColdChainCarById(String id) {
+        ColdChainCar coldChainCarById = coldChainCarMapper.selectColdChainCarById(id);
+        if(coldChainCarById.getStatus()!=1){
+            throw new RuntimeException("该冷链车状态不为空闲，不可删除");
+        }
         coldChainCarMapper.deleteColdChainCarById(id);
     }
 }

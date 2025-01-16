@@ -189,8 +189,12 @@ const deleteButton = async (row) => {
                     <el-table-column prop="name" label="名称" />
                     <el-table-column prop="tem" label="当前温度" />
                     <el-table-column prop="hum" label="当前湿度" />
-                    <el-table-column prop="volume" label="最大体积" />
-                    <el-table-column prop="weight" label="最大载重" />
+                    <el-table-column prop="volume" label="体积" >
+                        <template #default="scope">
+                            {{ scope.row.curVolume+"/"+scope.row.volume }}
+                        </template>
+                    </el-table-column>
+                    <el-table-column prop="weight" label="载重" />
                     <el-table-column prop="status" label="当前状态">
                         <template #default="scope">
                             <el-tag :type="scope.row.status == 1 ? 'primary' :(scope.row.status == 2?'warning':'danger')" disable-transitions>

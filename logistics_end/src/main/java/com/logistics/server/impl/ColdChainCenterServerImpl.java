@@ -6,12 +6,16 @@ import com.logistics.server.ColdChainCenterServer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class ColdChainCenterServerImpl implements ColdChainCenterServer {
 
     @Autowired
     ColdChainCenterMapper coldChainCenterMapper;
-    public ColdChainCenter getColdChainCenterByAreaId(String areaId){
+    public List<ColdChainCenter> getColdChainCenterByAreaId(String areaId){
         return coldChainCenterMapper.getColdChainCenterByAreaId(areaId);
     }
+
+
 }

@@ -7,6 +7,8 @@ import { ElMessage, ElMessageBox } from "element-plus"
 import useToken from "@/storage/tokenStorage"
 import { EluiChinaAreaDht } from 'elui-china-area-dht'
 import {updateServer} from "@/api/userApi"
+import {loadingUserInfoServer} from "@/api/userInfoApi.js"
+
 //=========================================数据区=========================================
 const chinaData = new EluiChinaAreaDht.ChinaArea().chinaAreaflat;
 const user = userInfoServer();
@@ -67,7 +69,9 @@ const save = () => {
       form.value.validate(async valid => {
         if (valid) {
           console.log("userModel.value=", userModel.value);
-          updateServer(userModel)
+          await updateServer(userModel)
+          const result=await loadingUserInfoServer();
+          user.userInfo=result.data
           ElMessage.success("修改成功")
         } else {
           ElMessage.error('数据格式有误');
@@ -107,22 +111,22 @@ const onChange = (e) => {
           <el-input v-model="userModel.name" />
         </el-form-item>
 
-        <el-form-item label="电话" prop="phone">
+        <el-form-item label="电话" prop="phone" v-if="user.userInfo==1">
           <el-input type="number" v-model="userModel.phone" />
         </el-form-item>
 
-        <el-form-item label="性别" prop="sex">
+        <el-form-item label="性别" prop="sex" v-if="user.userInfo==1">
           <el-radio-group v-model="userModel.sex">
             <el-radio value=0>女</el-radio>
             <el-radio value=1>男</el-radio>
           </el-radio-group>
         </el-form-item>
 
-        <el-form-item label="地区" prop="areaModel">
+        <el-form-item label="地区" prop="areaModel" v-if="user.userInfo==1">
           <elui-china-area-dht placeholder="请选择" v-model="userModel.areaModel" @change="onChange"></elui-china-area-dht>
         </el-form-item>
 
-        <el-form-item label="头像">
+        <el-form-item label="头像" v-if="user.userInfo.role==1">
           <el-upload action="http://localhost:8080/upload" :show-file-list="false" :on-success="loadAvatar"
             :headers="{ 'Authorization': useToken().token }" name="multipartFile" :auto-upload="true">
             <el-button type="primary">点击上传</el-button>

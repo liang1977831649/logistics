@@ -23,8 +23,8 @@ public class TestServer {
     UserServer  userServer;
     @Test
     public void test1(){
-        ColdChainCenter coldChainCenterByAreaId = coldChainCenterServer.getColdChainCenterByAreaId("451022");
-        System.out.println(coldChainCenterByAreaId);
+        List<ColdChainCenter> coldChainCenterByAreaIds = coldChainCenterServer.getColdChainCenterByAreaId("451022");
+        System.out.println(coldChainCenterByAreaIds);
     }
 
     @Test

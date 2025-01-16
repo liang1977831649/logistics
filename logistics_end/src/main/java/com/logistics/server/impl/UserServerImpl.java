@@ -4,7 +4,6 @@ import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.logistics.entity.*;
 import com.logistics.mapper.AreaMapper;
-import com.logistics.mapper.ColdChainCenterMapper;
 import com.logistics.mapper.UserMapper;
 import com.logistics.mapper.WebMapper;
 import com.logistics.server.UserServer;
@@ -25,8 +24,6 @@ public class UserServerImpl implements UserServer {
     private AreaMapper areaMapper;
     @Autowired
     private WebMapper webMapper;
-    @Autowired
-    private ColdChainCenterMapper coldChainCenterMapper;
 
     @Override
     public void insertUserForRegister(Account account) {

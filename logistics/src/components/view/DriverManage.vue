@@ -35,13 +35,7 @@ const driverModel = ref({
 })
 
 
-const checkedPwd = (rules, value, callback) => {
-    if (value !== registerBody.value.password) {
-        callback(new Error('前后密码不一致'))
-    } else {
-        callback()
-    }
-}
+
 const rules = {
     id: [
         { required: true, message: '请输入账号', trigger: 'blur' },

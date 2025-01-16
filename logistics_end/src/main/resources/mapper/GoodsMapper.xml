@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.logistics.mapper.GoodsMapper">
+    <insert id="insertGoods">
+        insert into goods(id, name, volume, weight,tem,hum, price, goods_pic,status, user_id) value (#{id},#{name},#{volume},#{weight},#{tem},#{hum},#{price},#{goodsPic},1,#{userId})
+    </insert>
+    <update id="updateGoods">
+        update goods
+        <set>
+            <if test="name!=null and name!=''">
+                name=#{name}
+            </if>
+            <if test="volume!=null">
+                ,volume=#{volume}
+            </if>
+            <if test="tem!=null">
+                ,tem=#{tem}
+            </if>
+            <if test="hum!=null">
+                ,hum=#{hum}
+            </if>
+            <if test="price!=null">
+                ,price=#{price}
+            </if>
+            <if test="goodsPic!=null">
+                ,goods_pic=#{goodsPic}
+            </if>
+            <if test="weight!=null">
+                ,weight=#{weight}
+            </if>
+            where id=#{id}
+        </set>
+    </update>
+    <delete id="deleteGoodsById">
+        delete from goods where id=#{id};
+    </delete>
+
+    <select id="getGoodsListByUserId" resultType="com.logistics.entity.Goods">
+        select goods.*,refrigerate_room.name as rmName from goods
+        left join (room_goods left join refrigerate_room on room_goods.rm_id=refrigerate_room.id)
+        on goods.id = room_goods.goods_id
+        <where>
+            user_id=#{userId}
+            <if test="name!=null and name!=''">
+                and goods.name like concat('%',#{name},'%')
+            </if>
+            <if test="id!=null and id!=''">
+                and goods.id like concat('%',#{id},'%')
+            </if>
+        </where>
+    </select>
+    <select id="selectGoodsAll" resultType="com.logistics.entity.Goods">
+        select goods.*, refrigerate_room.name as rmName ,user.name as userName
+        from
+        (goods left join user on goods.user_id = user.id)
+        left join (room_goods left join refrigerate_room on room_goods.rm_id = refrigerate_room.id)
+        on goods.id = room_goods.goods_id
+        <where>
+            <if test="name!=null and name!=''">
+                and goods.name like concat('%',#{name},'%')
+            </if>
+            <if test="id!=null and id!=''">
+                and goods.id like concat('%',#{id},'%')
+            </if>
+        </where>
+    </select>
+</mapper>
