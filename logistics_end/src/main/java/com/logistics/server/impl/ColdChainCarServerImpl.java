@@ -11,19 +11,22 @@ import com.logistics.server.ColdChainCarServer;
 import com.logistics.utils.ThreadLocalUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashMap;
 import java.util.List;
+
 @Service
 public class ColdChainCarServerImpl implements ColdChainCarServer {
     @Autowired
     private ColdChainCarMapper coldChainCarMapper;
     @Autowired
     private AreaMapper areaMapper;
+
     @Override
     public PageBean<ColdChainCar> getColdChainCarListByAreaId(Integer pageNum, Integer pageSize, String areaId, String name, String id, Integer status) {
         PageHelper.startPage(pageNum, pageSize);
-        List<ColdChainCar> coldChainCars = coldChainCarMapper.selectColdChainCarByAreaId(areaId, name, id,status);
+        List<ColdChainCar> coldChainCars = coldChainCarMapper.selectColdChainCarByAreaId(areaId, name, id, status);
 
         //设置地域名
         String areaCodeByName = areaMapper.getAreaNameByAreaCode(areaId);
@@ -42,25 +45,21 @@ public class ColdChainCarServerImpl implements ColdChainCarServer {
     public void updateColdChainCar(ColdChainCar coldChainCar) {
         //查找是否有这个driver
         ColdChainCar coldChainCarById = coldChainCarMapper.selectColdChainCarById(coldChainCar.getId());
-        if(coldChainCarById==null){
+        if (coldChainCarById == null) {
             throw new RuntimeException("不存在该冷链车");
         }
 
-        //一旦处于空闲状态，那么温湿度，都会被位置为0
-        if(coldChainCar.getStatus()==1){
-            coldChainCar.setHum(Float.valueOf(0));
-            coldChainCar.setTem(Float.valueOf(0));
-        }
-        coldChainCarMapper.updateDriver(coldChainCar);
+
+        coldChainCarMapper.updateCar(coldChainCar);
     }
 
     @Override
     public void addColdChainCar(ColdChainCar coldChainCar) {
         ColdChainCar coldChainCarById = coldChainCarMapper.selectColdChainCarById(coldChainCar.getId());
-        if(coldChainCarById!=null){
+        if (coldChainCarById != null) {
             throw new RuntimeException("已存在该卡车");
         }
-        String areaId = (String)((HashMap<String, Object>) ThreadLocalUtils.get()).get("areaId");
+        String areaId = (String) ((HashMap<String, Object>) ThreadLocalUtils.get()).get("areaId");
         coldChainCar.setAreaId(areaId);
         coldChainCarMapper.addColdChainCa(coldChainCar);
     }
@@ -68,9 +67,46 @@ public class ColdChainCarServerImpl implements ColdChainCarServer {
     @Override
     public void deleteColdChainCarById(String id) {
         ColdChainCar coldChainCarById = coldChainCarMapper.selectColdChainCarById(id);
-        if(coldChainCarById.getStatus()!=1){
+        if (coldChainCarById.getStatus() != 1) {
             throw new RuntimeException("该冷链车状态不为空闲，不可删除");
         }
         coldChainCarMapper.deleteColdChainCarById(id);
+    }
+
+    @Override
+    public ColdChainCar detailCar(String carId) {
+        ColdChainCar coldChainCarById = coldChainCarMapper.selectColdChainCarById(carId);
+        if (coldChainCarById == null) {
+            throw new RuntimeException("没有该司机");
+        }
+        return coldChainCarById;
+    }
+
+    /**
+     *
+     * @param carId 车辆Id
+     * @param volume 变化量
+     * @param weight 变化量
+     * @param type 类型：0减少，1增加
+     */
+    @Transactional
+    public void changeCarWeightAndWeight(String carId,Float volume,Float weight,int type){
+        ColdChainCar coldChainCarById = coldChainCarMapper.selectColdChainCarById(carId);
+
+        Float volumeNew;
+        Float weightNew;
+        if(type==1){
+            volumeNew=volume+coldChainCarById.getCurVolume();
+            weightNew=weight+coldChainCarById.getCurWeight();
+            if(volumeNew>coldChainCarById.getVolume()||weightNew>coldChainCarById.getWeight()){
+                throw new RuntimeException("超载或超空间，不可装货");
+            }
+        }else{
+            volumeNew=coldChainCarById.getCurVolume()-volume;
+            weightNew=coldChainCarById.getCurWeight()-weight;
+        }
+        coldChainCarById.setCurWeight(weightNew);
+        coldChainCarById.setCurVolume(volumeNew);
+        coldChainCarMapper.updateCar(coldChainCarById);
     }
 }

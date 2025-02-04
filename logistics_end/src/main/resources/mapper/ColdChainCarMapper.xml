@@ -7,7 +7,7 @@
         insert into cold_chain_car(id, name, weight, volume, status, area_id, createTime)
             value (#{id},#{name},#{weight},#{volume},1,#{areaId},now())
     </insert>
-    <update id="updateDriver">
+    <update id="updateCar">
         update cold_chain_car
         <set>
             <if test="name!=null and name!=''">

@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.logistics.mapper.TsCarMapper">
+    <insert id="insertTsCar">
+        insert into ts_car(id, driver_id, car_id,area_id,status,updateTime) value (#{id},#{driverId},#{carId},#{areaId},1,now())
+    </insert>
+    <update id="update">
+        update ts_car
+        <set>
+            updateTime=now()
+            <if test="driverId!=null and driverId!=''">
+                ,driver_id=#{driverId}
+            </if>
+            <if test="carId!=null and carId!=''">
+                ,car_id=#{carId}
+            </if>
+            <if test="status!=null">
+                ,status=#{status}
+            </if>
+        </set>
+        where id=#{id};
+    </update>
+
+    <select id="selectTsCarList" resultType="com.logistics.entity.TsCar">
+        select ts_car.*,cold_chain_car.name as carName,driver.name as driverName,driver.phone as driverPhone from ts_car,cold_chain_car,driver
+        <where>
+        ts_car.car_id=cold_chain_car.id
+        and ts_car.driver_id=driver.id
+        and ts_car.area_id=#{areaId}
+            <if test="id!=null and id!=''">
+                and ts_car.id like concat('%',#{id},'%')
+            </if>
+            <if test="carId!=null and carId!=''">
+                and ts_car.car_id like concat('%',#{carId},'%')
+            </if>
+            <if test="driverId!=null and driverId!=''">
+                and ts_car.driver_id like concat('%',#{driverId},'%')
+            </if>
+            <if test="driverName!=null and driverName!=''">
+                and driver.name like concat('%',#{driverName},'%')
+            </if>
+            <if test="userId!=null and userId!=''">
+                and transportation.user_id=#{userId}
+            </if>
+            <if test="status!=null">
+                and ts_car.status=#{status}
+            </if>
+        </where>
+    </select>
+    <select id="selectTsCarById" resultType="com.logistics.entity.TsCar">
+        select ts_car.*,cold_chain_car.name as carName,driver.name as driverName,driver.phone as driverPhone
+        from ts_car,
+             cold_chain_car,
+             driver
+        where ts_car.car_id = cold_chain_car.id
+          and ts_car.driver_id = driver.id
+          and ts_car.id = #{id}
+    </select>
+</mapper>

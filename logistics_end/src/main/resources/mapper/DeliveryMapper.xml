@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.logistics.mapper.DeliveryMapper">
+
+    <insert id="insertDelivery">
+        insert into delivery(id, user_id, goods_id, volume, weight, destination, status, updateTime)
+            value (#{id}, #{userId}, #{goodsId}, #{volume}, #{weight}, #{destination}, 1, now());
+    </insert>
+    <update id="updateDelivery">
+        update delivery
+        <set>
+            updateTime=now()
+            <if test="destination!=null and destination!=''">
+                ,destination=#{destination}
+            </if>
+            <if test="carDriId!=null ">
+                , car_dri_id=#{carDriId}
+            </if>
+            <if test="volume!=null ">
+                , volume=#{volume}
+            </if>
+            <if test="weight!=null ">
+                , weight=#{weight}
+            </if>
+            <if test="status!=null">
+                , status=#{status}
+            </if>
+            <if test="departTime!=null">
+                , departTime=#{departTime}
+            </if>
+
+        </set>
+        where id=#{id}
+    </update>
+    <select id="selectDelivery" resultType="com.logistics.entity.Delivery">
+        select delivery.*,goods.name as goodsName,user.name as userName from delivery,goods,user
+        <where>
+            delivery.goods_id=goods.id
+            and delivery.user_id=user.id
+            and user.area_id=#{areaId}
+            <if test="id!=null and id!=''">
+                and delivery.id=#{id}
+            </if>
+            <if test="goodsName!=null and goodsName!=''">
+                and goods.name like concat('%',#{goodsName},'%')
+            </if>
+            <if test="status!=null">
+                and delivery.status=#{status}
+            </if>
+            <if test="userId!=null and userId!=''">
+                and delivery.user_id=#{userId}
+            </if>
+        </where>
+    </select>
+    <!--这里的selectDeliveryByTsCarId用于删除Delivery。因为删除这个运输总单，不能存在运输子单（1，2）挂着它-->
+    <select id="selectDeliveryByTsCarId" resultType="com.logistics.entity.Delivery">
+        select *
+        from delivery
+        where car_dri_id = #{tsCarId}
+          and  status != 3 and status != 4;;
+    </select>
+    <!--这里的selectDeliveryByTsCarIdLimitStatusTow用于查询状态为运输为2的。因为其余的状态下，car和driver的状态时都可以是2-->
+    <select id="selectDeliveryByTsCarIdLimitStatusTow" resultType="com.logistics.entity.Delivery">
+        select *
+        from delivery
+        where car_dri_id = #{tsCarId}
+          and status = 2;
+    </select>
+    <select id="selectDeliveryListIsOneByGoodsId" resultType="com.logistics.entity.Delivery">
+        select delivery.*
+        from delivery,
+             goods
+        where delivery.goods_id = goods.id
+          and goods.id = #{goodsId}
+          and delivery.status = 1;
+    </select>
+
+</mapper>

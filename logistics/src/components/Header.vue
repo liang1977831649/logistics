@@ -6,9 +6,14 @@ import {ref} from "vue"
 import logoHeader from "../assets/image/logo_header.png"
 import routerStorage from "@/storage/routerStorage.js";
 import useToken from "@/storage/tokenStorage.js";
-import { SwitchButton,EditPen,User} from '@element-plus/icons-vue'
-import { useRouter } from "vue-router";
 
+import { useRouter } from "vue-router";
+import {
+  User,
+  EditPen,
+  SwitchButton,
+} from '@element-plus/icons-vue'
+import { getGoodsListServer } from "@/api/goodsApi.js"
 //=======================数据区==========================
 const router=useRouter();
 const user=userInfoServer();
@@ -37,7 +42,7 @@ const handleCommand = (command) => {
             })
     }
     else {
-        router.push('/' + command);
+        router.push('/person/' + command);
     }
 }
 //=======================方法区==========================
@@ -48,7 +53,7 @@ const handleCommand = (command) => {
 <template>
     <div >
         <el-image :src="logoHeader" style="width: 38px;height: 38px;vertical-align:middle;margin-left: 20px;"></el-image>
-        <span style="margin-left: 10px;">农产品冷链物流系统</span>
+        <span style="margin-left: 10px;">{{"农产品冷链物流平台"+(user.userInfo.role==0?'—后台管理':'')}}</span>
     </div>
     <div>
         <div style="float: left; margin-right: 20px;margin-top: 5px;"><strong>{{ user.userInfo.name?user.userInfo.name:'张XX' }}</strong></div>
@@ -56,7 +61,7 @@ const handleCommand = (command) => {
             <el-avatar :src="user.userInfo.userPic ? user.userInfo.userPic : tempUrl" />
             <template #dropdown>
                 <el-dropdown-menu>
-                    <el-dropdown-item command="userInfo" :icon="User">基本资料</el-dropdown-item>
+                    <el-dropdown-item command="info" :icon="User">基本资料</el-dropdown-item>
                     <el-dropdown-item command="password" :icon="EditPen">重置密码</el-dropdown-item>
                     <el-dropdown-item command="logout" :icon="SwitchButton">退出登录</el-dropdown-item>
                 </el-dropdown-menu>

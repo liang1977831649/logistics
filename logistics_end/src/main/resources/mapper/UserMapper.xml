@@ -5,7 +5,7 @@
 <mapper namespace="com.logistics.mapper.UserMapper">
 
     <insert id="insertUserFroRegister">
-        insert into user(id, password, role, area_id, create_time) value (#{id}, #{password}, #{role}, #{areaId}, now());
+        insert into user(id, password,name, role, area_id, create_time) value (#{id}, #{password},#{name}, #{role}, #{areaId}, now());
     </insert>
     <insert id="insertUserForAdd">
         insert into user value (#{id},#{name},#{password},#{phone},#{userPic},#{sex},#{role},#{areaId},now())

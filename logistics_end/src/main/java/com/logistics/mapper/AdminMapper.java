@@ -11,4 +11,7 @@ public interface AdminMapper {
 
     @Update("update admin set password=#{newPwd} where id=#{id}")
     void updateAdminPassword(String newPwd, String id);
+
+    @Select("select * from admin where area_id=#{areaId}")
+    Admin selectAdminByAreaId(String areaId);
 }

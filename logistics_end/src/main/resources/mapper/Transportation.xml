@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.logistics.mapper.TransportationMapper">
+
+    <insert id="insertTransportationByUser">
+        insert into transportation(id,user_id,goods_id,origin,status,updateTime)
+        value (#{id},#{userId},#{goodsId},#{origin},1,now())
+    </insert>
+    <update id="updateTransportation">
+        update transportation
+        <set>
+            updateTime=now()
+            <if test="origin!=null and origin!=''">
+                ,origin=#{origin}
+            </if>
+            <if test="status!=null">
+                , status=#{status}
+            </if>
+            <if test="carDriId!=null">
+                , car_dri_id=#{carDriId}
+            </if>
+            <if test="status!=null">
+                ,status=#{status}
+            </if>
+        </set>
+        where id=#{id};
+    </update>
+    <select id="selectTransportationList" resultType="com.logistics.entity.Transportation">
+        select transportation.*,goods.name as goodsName,user.name as userName from transportation ,goods,user
+        <where>
+        transportation.goods_id=goods.id
+        and transportation.user_id=user.id
+        and user.area_id=#{areaId}
+            <if test="id!=null and id!=''">
+                and transportation.id like concat('%',#{id},'%')
+            </if>
+            <if test="userId!=null and userId!=''">
+                and transportation.user_id like concat('%',#{userId},'%')
+            </if>
+            <if test="goodsId!=null and goodsId!=''">
+                and transportation.goods_id like concat('%',#{goodsId},'%')
+            </if>
+            <if test="goodsName!=null and goodsName!=''">
+                and goods.name like concat('%',#{goodsName},'%')
+            </if>
+            <if test="status!=null ">
+                and transportation.status=#{status}
+            </if>
+        </where>
+    </select>
+    <select id="selectTransportationByGoodsId" resultType="com.logistics.entity.Transportation">
+        select * from transportation where goods_id=#{goodsId}
+    </select>
+    <select id="selectTransportationByTsCarId" resultType="com.logistics.entity.Transportation">
+        select transportation.*, goods.name as goodsName, user.name as userName
+        from transportation,
+             goods,
+             user
+        where transportation.goods_id = goods.id
+          and transportation.user_id = user.id
+          and transportation.status!=3
+          and transportation.car_dri_id =#{id}
+    </select>
+    <select id="selectTransportationListByTsCarId" resultType="com.logistics.entity.Transportation">
+        select * from transportation where car_dri_id=#{tsCarId} and transportation.status!=3;
+    </select>
+</mapper>

@@ -19,11 +19,7 @@ const options = ref([
     {
         value: '1',
         label: '用户',
-    },
-    {
-        value: '2',
-        label: '司机',
-    },
+    }
 ])
 
 const registerBody = ref({
@@ -79,13 +75,15 @@ const registerRules = {
         { required: true, message: '请选择地区', trigger: 'blur' },
     ]
 }
+
+const moneyModel=ref({})
 // ---------------------==============方法区-----------------------
 const clearRegisterBody = () => {
     registerBody.value = {};
 }
 
 const onChange = (e) => {
-    console.log("e=",e);
+    console.log("e=", e);
     const three = chinaData[e[2]];
     registerBody.value.areaModel = JSON.parse(JSON.stringify(e));
     registerBody.value.area = three.label;
@@ -111,8 +109,8 @@ const register = () => {
             isRegister.value = false;
             console.log("registerBody=", registerBody.value);
             await registerServer(registerBody);
-            clearRegisterBody();
             ElMessage.success('注册成功,请登录')
+            clearRegisterBody();
         } else {
             ElMessage.error('数据错误');
         }

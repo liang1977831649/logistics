@@ -1,9 +1,6 @@
 package com.logistics.controller;
 
-import com.logistics.entity.Driver;
-import com.logistics.entity.PageBean;
-import com.logistics.entity.Refrigerate;
-import com.logistics.entity.Result;
+import com.logistics.entity.*;
 import com.logistics.server.RefrigerateServer;
 import com.logistics.utils.ThreadLocalUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,5 +51,10 @@ public class RefrigerateController {
     public Result getDetail(@PathVariable String id) {
         Refrigerate refrigerateById = refrigerateServer.getRefrigerateById(id);
         return Result.success(refrigerateById);
+    }
+    @PostMapping("/inRoom")
+    public Result goodsInRoom(@RequestBody Rm_Gs rmGs){
+        refrigerateServer.inRoom(rmGs);
+        return Result.success();
     }
 }

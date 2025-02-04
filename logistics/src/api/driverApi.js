@@ -26,3 +26,4 @@ export const updateServer=async(driverModel)=>{
 export const deleteServer =async (id)=>{
     await request.delete("/driver/"+id);
 }
+

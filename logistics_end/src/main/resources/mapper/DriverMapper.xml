@@ -4,7 +4,7 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.logistics.mapper.DriverMapper">
     <insert id="insertDriver">
-        insert into driver value(#{id},#{name},#{phone},#{sex},#{status},#{areaId},now())
+        insert into driver value(#{id},#{name},#{phone},#{sex},1,#{areaId},now())
     </insert>
     <update id="updateDriver">
         update driver

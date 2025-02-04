@@ -13,6 +13,20 @@ export const getGoodsListServer=async(searchBody)=>{
      return result;
 }
 
+export const getGoodsListServerShopping=async(searchBody)=>{
+    const result= await request.get("/goods/shopping",{
+        params:{
+            pageNum:searchBody.value.pageNum,
+            pageSize:searchBody.value.pageSize,
+            name:searchBody.value.name,
+            id:searchBody.value.id,
+            status:searchBody.value.status
+        }
+     });
+
+     return result;
+}
+
 export const addServer=async (goodsModel)=>{
     await request.post("/goods",goodsModel.value)
 }
@@ -25,7 +39,7 @@ export const deleteServer =async (id)=>{
     await request.delete("/goods/"+id);
 }
 
-export const detailServer=async(id)=>{
+export const detailGoodsServer=async(id)=>{
     const result=await request.get("goods/detail/"+id);
     return result
 }

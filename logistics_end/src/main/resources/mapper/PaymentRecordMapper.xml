@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.logistics.mapper.PaymentRecordMapper">
+
+    <insert id="insertPaymentRecord">
+        insert into payment_record(id, pay_id, collect_id, cost, pay_type, transaction, transaction_id, createTime)
+            value(null,#{payId},#{collectId},#{cost},#{payType},#{transaction},#{transactionId},now())
+    </insert>
+    <select id="selectPaymentList" resultType="com.logistics.entity.PaymentRecord">
+        select payment_record.*,user.name as userName,user.id as userid from payment_record,user
+        <where>
+            ((payment_record.pay_id=#{id} and user.id=payment_record.collect_id)
+            or (payment_record.collect_id=#{id} and user.id=payment_record.pay_id))
+            <if test="userName!=null and userName!=''">
+                and user.name like concat('%',#{userName},'%')
+            </if>
+            <if test="transaction!=null and transaction!=''">
+                and payment_record.transaction=#{transaction}
+            </if>
+            <if test="transactionId!=null and transactionId!=''">
+                and payment_record.transaction_id like concat('%',#{transactionId},'%')
+            </if>
+        </where>
+    </select>
+</mapper>

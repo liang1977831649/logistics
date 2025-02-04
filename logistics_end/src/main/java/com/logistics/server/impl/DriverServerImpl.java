@@ -65,6 +65,11 @@ public class DriverServerImpl implements DriverServer {
 
     @Override
     public void deleteDriverById(String id) {
+        //如果该司机处于空闲，那么就直接删除
+        Driver driverById = driverMapper.selectDriverById(id);
+        if(driverById.getStatus()!=1){
+            throw new RuntimeException("该司机不处于空闲状态，不可删除!");
+        }
         driverMapper.deleteById(id);
     }
 }

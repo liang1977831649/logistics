@@ -3,6 +3,7 @@ package com.logistics.server;
 import com.logistics.entity.Account;
 import com.logistics.entity.PageBean;
 import com.logistics.entity.User;
+import org.apache.ibatis.annotations.Select;
 
 import java.util.List;
 
@@ -19,4 +20,6 @@ public interface UserServer {
     void delete(String id);
 
     void updatePassword(String oldPwd, String newPwd, String id);
+
+    User detailUser(String id);
 }

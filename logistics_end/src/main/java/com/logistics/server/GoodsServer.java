@@ -15,5 +15,7 @@ public interface GoodsServer {
 
     Goods getGoodsById(String id);
 
-    PageBean<Goods> getGoodsList(Integer pageNum,Integer pageSize,String name,String id);
+    PageBean<Goods> getGoodsList(Integer pageNum,Integer pageSize,String name,String id,String userName);
+
+    PageBean<Goods> getGoodsListForShopping(Integer pageNum,Integer pageSize,String name,String id);
 }

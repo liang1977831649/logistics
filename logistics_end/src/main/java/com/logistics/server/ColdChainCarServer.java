@@ -13,4 +13,7 @@ public interface ColdChainCarServer {
     void addColdChainCar(ColdChainCar coldChainCar);
 
     void deleteColdChainCarById(String id);
+
+
+    ColdChainCar detailCar(String carId);
 }

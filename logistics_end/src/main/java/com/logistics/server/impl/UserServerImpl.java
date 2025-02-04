@@ -43,6 +43,7 @@ public class UserServerImpl implements UserServer {
         user.setPassword(Md5Util.getMD5String(user.getPassword()));//设置密码
 
         user.setRole(1);//设置role
+        user.setName("HelloWorld");
 
         /* String areaCode = areaMapper.getAreaCodeByName(user.getArea());//获取到地区的代码
         user.setAreaId(areaCode);//设置地区id */
@@ -139,5 +140,11 @@ public class UserServerImpl implements UserServer {
         }
         newPwd = Md5Util.getMD5String(newPwd);
         userMapper.updateUserPassword(newPwd, id);
+    }
+
+    @Override
+    public User detailUser(String id) {
+        User user = userMapper.selectUserById(id);
+        return user;
     }
 }

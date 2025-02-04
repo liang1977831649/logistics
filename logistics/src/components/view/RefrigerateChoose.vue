@@ -2,7 +2,7 @@
 // =====================================引用区 =====================================
 import { ref } from "vue";
 import { Search } from '@element-plus/icons-vue'
-import { getRefrigerateListServer, detailServer } from "@/api/refrigerateApi.js"
+import { getRefrigerateListServer, detailRefrigerateServer } from "@/api/refrigerateApi.js"
 // =====================================数据区 =====================================
 const currentPage = ref(1)
 const pageSize = ref(8)
@@ -12,6 +12,8 @@ const allNumber = ref(100)
 const searchBody = ref({
     id: "",
     name: "",
+    pageNum:1,
+    pageSize:8
 })
 const tableData = ref([])
 const refrigerateModel = ref({
@@ -53,7 +55,7 @@ const detail = async (row) => {
     if (form.value != null) {
         form.value.resetFields();
     }
-    const result = await detailServer(row.id);
+    const result = await detailRefrigerateServer(row.id);
     refrigerateModel.value = result.data
     console.log("refrigerateModel.value=", refrigerateModel.value);
     visibleDrawer.value = true;
@@ -62,6 +64,7 @@ const emit=defineEmits(['event'])
 const handleClick=(row)=>{
     emit('event',row)
 }
+defineExpose({search})//将方法暴露出来，便于父组件调用
 </script>
 
 <template>
@@ -86,7 +89,7 @@ const handleClick=(row)=>{
                             {{ scope.row.curVolume + "/" + scope.row.maxVolume }}
                         </template>
                     </el-table-column>
-                    <el-table-column prop="centreName" label="仓库">
+                    <el-table-column prop="centreName" label="仓库中心">
                         <template #default="scope">
                             <el-tag type="primary">
                                 {{ scope.row.centreName }}

@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.logistics.mapper.RoomCostMapper">
+
+    <insert id="insertRoomCost">
+        insert into room_cost(id,user_id, deli_id, day, cost, status, updateTime)
+        value (#{id},#{userId},#{deliId},#{day},#{cost},1,now());
+    </insert>
+    <update id="updateRoomCost">
+        update room_cost
+        <set>
+            <if test="cost!=null and cost!=''">
+                cost=#{cost}
+            </if>
+            <if test="status!=null and status!=''">
+                ,status=#{status}
+            </if>
+        </set>
+        where id=#{id}
+    </update>
+    <select id="selectRoomCostById" resultType="com.logistics.entity.RoomCost">
+        select * from room_cost where id=#{id};
+    </select>
+    <select id="selectRoomCostList" resultType="com.logistics.entity.RoomCost">
+        select room_cost.*,delivery.weight as weight,delivery.volume as volume,goods.name as goodsName,goods.id as goodsId
+        from room_cost
+        left join (delivery left join goods
+        on delivery.goods_id = goods.id)
+        on room_cost.deli_id=delivery.id
+        <where>
+            room_cost.user_id=#{userId}
+            <if test="deliId!=null and deliId!=''">
+                and room_cost.deli_id like concat('%',#{deliId},'%')
+            </if>
+            <if test="status!=null and status!=''">
+                and room_cost.status=#{status}
+            </if>
+            <if test="goodsName!=null and goodsName!=''">
+                and goods.name like concat('%',#{goodsName},'%')
+            </if>
+        </where>
+    </select>
+    <select id="selectRoomCostListForAdmin" resultType="com.logistics.entity.RoomCost">
+        select room_cost.*,delivery.volume,delivery.weight,goods.name as goodsName,goods.id as goodsId,user.name as userName
+               from room_cost left join
+        (delivery left join (goods left join user on goods.user_id = user.id) on
+        delivery.goods_id=goods.id) on room_cost.deli_id=delivery.id
+        <where>
+            user.area_id =#{areaId}
+            <if test="userId!=null and userId!=''">
+                and user.id like concat('%',#{userId},'%')
+            </if>
+            <if test="deliId!=null and deliId!=''">
+                and delivery.id like concat('%',#{deliId},'%')
+            </if>
+            <if test="status!=null and status!=''">
+                and room_cost.status=#{status}
+            </if>
+            <if test="goodsName!=null and goodsName!=''">
+                and goods.name like concat('%',#{goodsName},'%')
+            </if>
+        </where>
+    </select>
+    <select id="selectDetailRoomCostById" resultType="com.logistics.entity.RoomCost">
+        select room_cost.*,
+               delivery.weight as weight,
+               delivery.volume as volume,
+               goods.id        as goodsId,
+               goods.name      as goodsName
+        from room_cost
+                 left join
+             (delivery left join goods on delivery.goods_id = goods.id)
+             on room_cost.deli_id = delivery.id
+        where room_cost.id = #{id}
+    </select>
+    <select id="selectInComeLastDay" resultType="com.logistics.entity.RoomCost">
+        select * from room_cost where date_sub(curdate(),interval 1 day) &lt;= room_cost.updateTime and room_cost.user_id=#{areaId}
+    </select>
+</mapper>

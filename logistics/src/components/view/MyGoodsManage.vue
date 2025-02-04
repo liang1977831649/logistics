@@ -2,10 +2,17 @@
 // =====================================引用区 =====================================
 import { ref } from "vue";
 import { Search } from '@element-plus/icons-vue'
-import { getGoodsListServer, addServer, updateServer, deleteServer, detailServer } from "@/api/goodsApi.js"
+import { getGoodsListServer, addServer, updateServer, deleteServer, detailGoodsServer } from "@/api/goodsApi.js"
 import { ElMessage, ElMessageBox } from "element-plus"
 import useToken from "@/storage/tokenStorage"
 import userInfoServer from "@/storage/userStorage"
+import { detailRefrigerateServer } from "@/api/refrigerateApi"
+
+import {
+  Warning,
+} from '@element-plus/icons-vue'
+import { showRoomCostCompute} from "@/api/roomCostComputeApi"
+
 // =====================================数据区 =====================================
 const tempUrl = ref("https://images.wondershare.com/repairit/aticle/2021/07/resolve-images-not-showing-problem-1.jpg")
 const currentPage = ref(1)
@@ -16,6 +23,8 @@ const allNumber = ref(100)
 const searchBody = ref({
     id: "",
     name: "",
+    pageNum: 1,
+    pageSize: 8
 })
 const dialogVisible = ref(false);
 const tableData = ref([])
@@ -57,7 +66,10 @@ const rules = {
 }
 const form = ref(null);
 const visibleDrawer = ref(false)
-const editFlag=ref(true);
+const editFlag = ref(true);
+const dialogVisibleOfCar = ref(false);
+const carModel = ref({})
+const roomCostComputeBody=ref({})
 // =====================================方法区 =====================================
 const search = async () => {
     const result = await getGoodsListServer(searchBody);
@@ -81,20 +93,21 @@ search();
 const add = () => {
     cleanModel();
     title.value = '新增';
-    editFlag.value=true;
+    editFlag.value = true;
     dialogVisible.value = true;
 }
 const editButton = (row) => {
     if (row.status != 1) {
         // ElMessage.error("农产品状态不在空闲状态中，不能修改")
         // return
-        editFlag.value=false;
-    }else{
-        editFlag.value=true;
+        editFlag.value = false;
+    } else {
+        editFlag.value = true;
     }
     row.tem = row.tem + ""
     row.hum = row.hum + ""
     goodsModel.value = JSON.parse(JSON.stringify(row));
+    goodsModel.value.status=goodsModel.value.status+"";
     console.log(goodsModel.value);
     title.value = "编辑"
     dialogVisible.value = true;
@@ -159,7 +172,7 @@ const deleteButton = async (row) => {
 }
 
 const detail = async (row) => {
-    const result = await detailServer(row.id);
+    const result = await detailGoodsServer(row.id);
     goodsModel.value = result.data
     visibleDrawer.value = true;
 }
@@ -167,10 +180,45 @@ const detail = async (row) => {
 const loadAvatar = (res) => {
     goodsModel.value.goodsPic = res.data
 }
+const detailRefrigerate = async (id) => {
+    console.log("id="+id);
+    if (id) {
+        const result = await detailRefrigerateServer(id);
+        carModel.value = result.data;
+        dialogVisibleOfCar.value = true;
+    }
+}
+
+// 加载定价策略
+const getRoomCostCompute = async () => {
+  const result = await showRoomCostCompute();
+  if (result.data) {
+    roomCostComputeBody.value = result.data;
+  }
+}
+getRoomCostCompute();
 </script>
 
 <template>
     <div>
+        <!-- 有关定价策略 -->
+        <el-statistic :value="'重量:'+roomCostComputeBody.weightPrice+'元/天*吨|体积:'+roomCostComputeBody.volumePrice+'元/天*m³|服务费:'+roomCostComputeBody.other+'元/次'">
+          <template #title>
+            <div style="display: inline-flex; align-items: center">
+              官方冷藏室使用定价策略
+              <el-tooltip
+                effect="dark"
+                :content="'重量:'+roomCostComputeBody.weightPrice+'元/天*吨|体积:'+roomCostComputeBody.volumePrice+'元/天*m³|服务费:'+roomCostComputeBody.other+'元/次'"
+                placement="top"
+              >
+                <el-icon style="margin-left: 4px" :size="12">
+                  <Warning />
+                </el-icon>
+              </el-tooltip>
+            </div>
+          </template>
+        </el-statistic>
+
         <el-card>
             <template #header>
                 <div>
@@ -189,20 +237,27 @@ const loadAvatar = (res) => {
                 <el-table :data="tableData" stripe style="width: 100%">
                     <el-table-column prop="id" label="编号" />
                     <el-table-column prop="name" label="商品名" />
-                    <el-table-column prop="price" label="价格" />
+                    <el-table-column prop="price" label="价格">
+                        <template #default="{ row }">
+                            <el-text tag="b">{{ row.price + "元/kg" }}</el-text>
+                        </template>
+                    </el-table-column>
                     <el-table-column prop="status" label="状态">
                         <template #default="{ row }">
-                            {{ row.status == 1 ? '空闲' : (row.status == 2 ? '运输' : (row.status == 3 ? '在库' : '出售')) }}
+                            <el-tag
+                                :type="row.status == 1 ? 'primary' : (row.status==2?'success':(row.status==3?'warning':(row.status==4?'danger':'info')))">
+                                {{ row.status == 1 ? '空闲' : (row.status == 2 ? '运输中' : (row.status == 3 ? '在库' : (row.status == 4 ? '出售' :'售罄' ) )) }}
+                            </el-tag>
                         </template>
                     </el-table-column>
                     <el-table-column prop="rmName" label="舱室">
                         <template #default="scope">
-                            <el-tag type="success" disable-transitions>
+                            <el-link type="primary"  @click="detailRefrigerate(scope.row.rmId)">
                                 {{ scope.row.rmName ? scope.row.rmName : "暂无" }}
-                            </el-tag>
+                            </el-link>
                         </template>
                     </el-table-column>
-                    <el-table-column prop="user_pic" label="头像">
+                    <el-table-column prop="user_pic" label="图片">
                         <template #default="{ row }">
                             <el-image :src="row.goodsPic ? row.goodsPic : tempUrl" style="width: 60px;" />
                         </template>
@@ -233,6 +288,8 @@ const loadAvatar = (res) => {
                 </div>
             </template>
         </el-card>
+
+        
         <!-- 添加或者编辑弹窗 -->
         <div>
             <el-dialog v-model="dialogVisible" :title="title" width="350px">
@@ -271,6 +328,14 @@ const loadAvatar = (res) => {
                             <img :src="goodsModel.goodsPic ? goodsModel.goodsPic : tempUrl" width="100px" />
                         </el-upload>
                     </el-form-item>
+
+                    <el-form-item v-if="goodsModel.status==3||goodsModel.status==4" label="是否出售" prop="price">
+                        <!-- <el-input type="number" v-model="goodsModel.status" /> -->
+                         <el-radio-group v-model="goodsModel.status">
+                            <el-radio value="3">停售</el-radio>
+                            <el-radio value="4">出售</el-radio>
+                         </el-radio-group>
+                    </el-form-item>
                 </el-form>
 
                 <template #footer>
@@ -307,7 +372,7 @@ const loadAvatar = (res) => {
                     <el-input type="number" v-model="goodsModel.tem" disabled />
                 </el-form-item>
 
-                <el-form-item label="冷链温度" prop="hum">
+                <el-form-item label="冷链湿度" prop="hum">
                     <el-input type="number" v-model="goodsModel.hum" disabled />
                 </el-form-item>
 
@@ -320,6 +385,31 @@ const loadAvatar = (res) => {
                 </el-form-item>
             </el-form>
         </el-drawer>
+
+        <!-- 冷链室详情 -->
+        <div>
+            <el-dialog v-model="dialogVisibleOfCar" title="冷链室详情" width="250px">
+                <el-form>
+                    <el-form-item label="Id">
+                        <el-text tag="b">{{ carModel.id }}</el-text>
+                    </el-form-item>
+                    <el-form-item label="名称">
+                        <el-text tag="b">{{ carModel.name }}</el-text>
+                    </el-form-item>
+                    <el-form-item label="温度湿度">
+                        <el-text tag="b">{{ carModel.tem + "°C/" + carModel.hum+"%" }}</el-text>
+                    </el-form-item>
+                    <el-form-item label="所在冷链中心">
+                        <el-text tag="b">{{ carModel.centreName }}</el-text>
+                    </el-form-item>
+                </el-form>
+                <template #footer>
+                    <div class="dialog-footer">
+                        <el-button type="primary" @click="dialogVisibleOfCar = false">我已知晓</el-button>
+                    </div>
+                </template>
+            </el-dialog>
+        </div>
     </div>
 </template>
 

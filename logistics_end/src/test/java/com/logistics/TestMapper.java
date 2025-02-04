@@ -1,16 +1,13 @@
 package com.logistics;
 
-import com.logistics.entity.Account;
-import com.logistics.entity.Admin;
-import com.logistics.entity.User;
-import com.logistics.mapper.AdminMapper;
-import com.logistics.mapper.AreaMapper;
-import com.logistics.mapper.UserMapper;
-import com.logistics.mapper.WebMapper;
+import com.logistics.entity.*;
+import com.logistics.mapper.*;
+import com.logistics.server.DeliveryServer;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @SpringBootTest
@@ -24,6 +21,18 @@ public class TestMapper {
     AdminMapper adminMapper;
     @Autowired
     WebMapper webMapper;
+
+    @Autowired
+    TransportationMapper transportationMapper;
+    @Autowired
+    DeliveryMapper deliveryMapper;
+
+    @Autowired
+    MoneyMapper moneyMapper;
+    @Autowired
+    GoodsCostMapper goodsCostMapper;
+
+
     @Test
     public void test(){
         String areaCodeByName = areaMapper.getAreaCodeByName("田东县");
@@ -44,7 +53,30 @@ public class TestMapper {
     }
     @Test
     public void test4(){
-
-
+        Delivery delivery = deliveryMapper.selectDeliveryById("dec1217ecex0");
+        delivery.setCarDriId("1344fwedqw2");
+        deliveryMapper.updateDelivery(delivery);
     }
+    @Test
+    public void test5(){
+        Delivery delivery = new Delivery();
+        delivery.setId("de6a2e02f4xb");
+        delivery.setDepartTime(LocalDateTime.now());
+        deliveryMapper.updateDelivery(delivery);
+    }
+
+    @Test
+    public void test6(){
+        List<GoodsCost> goodsCosts = goodsCostMapper.selectGoodsCostListByUserId(null, null, null, null, "202168484",1);
+        System.out.println(goodsCosts);
+    }
+
+    @Test
+    public void test7(){
+        List<User> users = userMapper.selectUserByAreaId("451022", null, null);
+        for (User user : users) {
+            //moneyMapper.insertAccountForUser(user.getId());
+        }
+    }
+
 }

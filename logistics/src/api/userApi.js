@@ -38,3 +38,7 @@ export const updateUserPassword=async(passwordBody)=>{
     }
     await request.post("/user/password",param)
 }
+
+export const detailUserServer=async (id)=>{
+    return await request.get("/user/detail/"+id);
+}

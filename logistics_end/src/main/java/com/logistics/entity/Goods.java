@@ -22,11 +22,10 @@ public class Goods {
     @NotNull(groups = Update.class)
     private String userId;
     private String goodsPic;
+    private String rmId;
     private String rmName;
     private Integer status;
     private String userName;
-    private String rmId;
-
     public interface Update{};
 
 }

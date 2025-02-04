@@ -5,7 +5,7 @@ import { Search } from '@element-plus/icons-vue'
 import { getColdChainCarListServer, addServer, updateServer, deleteServer } from "@/api/coldChainCarApi.js"
 import { EluiChinaAreaDht } from 'elui-china-area-dht'
 import locationStorage from "@/storage/locationStorage.js"
-import { ElMessage, ElMessageBox } from "element-plus"
+import { ElMessage, ElMessageBox, ElNotification } from "element-plus"
 
 // =====================================数据区 =====================================
 const chinaData = new EluiChinaAreaDht.ChinaArea().chinaAreaflat;
@@ -18,7 +18,8 @@ const searchBody = ref({
     name: '',
     id: '',
     pageSize: 8,
-    pageNum: 1
+    pageNum: 1,
+    status: ''
 })
 const dialogVisible = ref(false);
 const tableData = ref([])
@@ -26,10 +27,10 @@ const title = ref('');
 const coldChainCarModel = ref({
     id: '',
     name: '',
-    hum:'',
-    tem:'',
-    volume:'',
-    weight:'',
+    hum: '',
+    tem: '',
+    volume: '',
+    weight: '',
     area: '',
     areaId: '',
     status: '',
@@ -51,20 +52,22 @@ const rules = {
     status: [
         { required: true, message: '请选择状态', trigger: 'change' },
     ],
-    hum:[
-        {required:true,message:'请输入湿度',trigger:'blur'},
+    hum: [
+        { required: true, message: '请输入湿度', trigger: 'blur' },
     ],
-    tem:[
-        {required:true,message:'请输入温度',trigger:'blur'},
+    tem: [
+        { required: true, message: '请输入温度', trigger: 'blur' },
     ],
-    weight:[
-        {required:true,message:'请输入载重',trigger:'blur'},
+    weight: [
+        { required: true, message: '请输入载重', trigger: 'blur' },
     ],
-    volume:[
-        {required:true,message:'请输入体积',trigger:'blur'},
+    volume: [
+        { required: true, message: '请输入体积', trigger: 'blur' },
     ]
 }
 const form = ref(null);
+const dialogHumTem = ref(false);
+const formHumTem = ref(null);
 // =====================================方法区 =====================================
 
 //加载当前的位置信息
@@ -152,6 +155,10 @@ const deleteButton = async (row) => {
             type: "warning",
         })
         .then(async () => {
+            if (row.status != 1) {
+                ElMessage.error("该车状态不是空闲，不可删除")
+                return;
+            }
             await deleteServer(row.id);
             await search()
             ElMessage.success("删除成功")
@@ -159,6 +166,28 @@ const deleteButton = async (row) => {
         .catch(() => {
             ElMessage.info('用户取消了删除')
         })
+}
+
+const updateHumTemWindows = (row) => {
+    coldChainCarModel.value = {};
+    coldChainCarModel.value.id=row.id;
+    coldChainCarModel.value.name=row.name
+    coldChainCarModel.value.hum=row.hum
+    coldChainCarModel.value.tem=row.tem
+    dialogHumTem.value = true;
+}
+
+const updateHumTem = () => {
+    formHumTem.value.validate(async valid => {
+        if (valid) {
+            await updateServer(coldChainCarModel)
+            dialogHumTem.value = false;
+            await search()
+            ElNotification.success("已修改温湿度")
+        } else {
+            ElMessage.error('数据错误');
+        }
+    })
 }
 </script>
 
@@ -170,10 +199,11 @@ const deleteButton = async (row) => {
                     <el-input v-model="searchBody.id" style="width: 200px" placeholder="车辆编号" :prefix-icon="Search" />
                     <el-input v-model="searchBody.name" style="width: 200px;margin-left:10px" placeholder="车辆名称"
                         :prefix-icon="Search" />
-                    
-                    <el-select v-model="searchBody.status" style="width: 200px;margin-left: 10px;" placeholder="请选择状态" >
+
+                    <el-select v-model="searchBody.status" style="width: 200px;margin-left: 10px;" placeholder="请选择状态">
                         <el-option label="空闲" value="1" />
-                        <el-option label="繁忙" value="2" />
+                        <el-option label="待发车" value="2" />
+                        <el-option label="运输中" value="3" />
                     </el-select>
 
                     <el-button type="primary" style="margin-left: 10px;" @click="search()">搜索</el-button>
@@ -187,32 +217,40 @@ const deleteButton = async (row) => {
                 <el-table :data="tableData" stripe style="width: 100%">
                     <el-table-column prop="id" label="车编号" />
                     <el-table-column prop="name" label="名称" />
-                    <el-table-column prop="tem" label="当前温度" />
-                    <el-table-column prop="hum" label="当前湿度" />
-                    <el-table-column prop="volume" label="体积" >
-                        <template #default="scope">
-                            {{ scope.row.curVolume+"/"+scope.row.volume }}
+                    <el-table-column prop="tem" label="当前温度" >
+                        <template #default="{row}">
+                            {{ row.tem+"℃" }}
                         </template>
                     </el-table-column>
-                    <el-table-column prop="weight" label="载重" />
+                    <el-table-column prop="hum" label="当前湿度" >
+                        <template #default="{row}">
+                            {{ row.hum+"%" }}
+                        </template>
+                    </el-table-column>
+                    <el-table-column prop="volume" label="体积">
+                        <template #default="scope">
+                            {{ scope.row.curVolume + "/" + scope.row.volume+"m³" }}
+                        </template>
+                    </el-table-column>
+                    <el-table-column prop="weight" label="载重">
+                        <template #default="scope">
+                            {{ scope.row.curWeight + "/" + scope.row.weight+"kg" }}
+                        </template>
+                    </el-table-column>
                     <el-table-column prop="status" label="当前状态">
                         <template #default="scope">
-                            <el-tag :type="scope.row.status == 1 ? 'primary' :(scope.row.status == 2?'warning':'danger')" disable-transitions>
-                                {{ scope.row.status == 1 ? '空闲' :( scope.row.status == 2?'繁忙':'停用' )}}
+                            <el-tag :type="scope.row.status == 1 ? 'primary' : (scope.row.status == 2 ? 'warning' : 'danger')"
+                                disable-transitions>
+                                {{ scope.row.status == 1 ? '空闲' : (scope.row.status == 2 ? '待发车' : '运输中') }}
                             </el-tag>
                         </template>
                     </el-table-column>
-                    <el-table-column prop="area" label="地区">
-                        <template #default="scope">
-                            <el-tag type="primary" disable-transitions>
-                                {{ scope.row.area }}
-                            </el-tag>
-                        </template>
-                    </el-table-column>
-                    <el-table-column prop="createTime" label="注册时间" />
                     <el-table-column fixed="right" label="操作" min-width="120">
                         <template #default="{ row }">
-                            <el-button type="primary" size="small" @click="editButton(row)">
+                            <el-button type="primary" size="small" @click="updateHumTemWindows(row)">
+                                温湿度
+                            </el-button>
+                            <el-button type="success" size="small" @click="editButton(row)">
                                 编辑
                             </el-button>
                             <el-button type="danger" size="small" @click="deleteButton(row)">
@@ -233,9 +271,10 @@ const deleteButton = async (row) => {
                 </div>
             </template>
         </el-card>
+
         <!-- 添加或者编辑弹窗 -->
         <div>
-            <el-dialog v-model="dialogVisible" :title="title" width="350px">
+            <el-drawer v-model="dialogVisible" :title="title" direction="rtl" size="30%">
                 <el-form :model="coldChainCarModel" :rules="rules" ref="form">
                     <el-form-item v-if="title == '新增'" label="编号" prop="id">
                         <el-input v-model="coldChainCarModel.id" />
@@ -248,32 +287,45 @@ const deleteButton = async (row) => {
                         <el-input v-model="coldChainCarModel.name" />
                     </el-form-item>
 
+                    <el-form-item label="当前体积" prop="volume" v-if="title == '编辑'">
+                        <el-input type="number" v-model="coldChainCarModel.curVolume" />
+                    </el-form-item>
+
                     <el-form-item label="体积" prop="volume">
                         <el-input type="number" v-model="coldChainCarModel.volume" />
+                    </el-form-item>
+
+                    <el-form-item label="当前载重" prop="weight" v-if="title == '编辑'">
+                        <el-input type="number" v-model="coldChainCarModel.curWeight" />
                     </el-form-item>
 
                     <el-form-item label="载重" prop="weight">
                         <el-input type="number" v-model="coldChainCarModel.weight" />
                     </el-form-item>
 
-                    <el-form-item v-if="title=='编辑'" label="温度" prop="tem">
+                    <el-form-item v-if="title == '编辑'" label="温度" prop="tem">
                         <el-input type="number" v-model="coldChainCarModel.tem" />
                     </el-form-item>
 
-                    <el-form-item v-if="title=='编辑'" label="湿度" prop="hum">
+                    <el-form-item v-if="title == '编辑'" label="湿度" prop="hum">
                         <el-input type="number" v-model="coldChainCarModel.hum" />
                     </el-form-item>
 
-                    <el-form-item v-if="title=='编辑'" label="状态" prop="status" >
+                    <el-form-item v-if="title == '编辑'" label="状态" prop="status">
                         <el-radio-group v-model="coldChainCarModel.status">
                             <el-radio value=1>空闲</el-radio>
-                            <el-radio value=2>繁忙</el-radio>
+                            <el-radio value=2>待发车</el-radio>
+                            <el-radio value=3>运输中</el-radio>
                         </el-radio-group>
                     </el-form-item>
 
                     <el-form-item v-if="title == '编辑'" label="地区" prop="areaModel">
                         <elui-china-area-dht placeholder="请选择" v-model="coldChainCarModel.areaModel"
                             @change="onChange"></elui-china-area-dht>
+                    </el-form-item>
+
+                    <el-form-item label="注册时间">
+                        <el-input v-model="coldChainCarModel.createTime" disabled />
                     </el-form-item>
                 </el-form>
 
@@ -283,6 +335,31 @@ const deleteButton = async (row) => {
                         <el-button type="primary" @click="editAndAdd()">
                             确定
                         </el-button>
+                    </div>
+                </template>
+            </el-drawer>
+        </div>
+
+        <div>
+            <el-dialog v-model="dialogHumTem" title="修改车辆温湿度" width="300px">
+                <el-form :model="coldChainCarModel" :rules="rules" ref="formHumTem">
+                    <el-form-item label="Id">
+                        <el-text tag="b">{{ coldChainCarModel.id }}</el-text>
+                    </el-form-item>
+                    <el-form-item label="车名">
+                        <el-text tag="b">{{ coldChainCarModel.name }}</el-text>
+                    </el-form-item>
+                    <el-form-item label="温度" prop="tem">
+                        <el-input type="number" v-model="coldChainCarModel.tem" />
+                    </el-form-item>
+                    <el-form-item label="湿度" prop="hum">
+                        <el-input type="number" v-model="coldChainCarModel.hum" />
+                    </el-form-item>
+                </el-form>
+                <template #footer>
+                    <div class="dialog-footer">
+                        <el-button @click="coldChainCarModel = {}; dialogHumTem = false">取消</el-button>
+                        <el-button type="primary" @click="updateHumTem">确定</el-button>
                     </div>
                 </template>
             </el-dialog>

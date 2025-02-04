@@ -17,7 +17,7 @@ public class GoodsController {
     @Autowired
     private GoodsServer goodsServer;
     @GetMapping("/list")
-    public Result getList(Integer pageNum,Integer pageSize,String name,String id){
+    public Result getList(Integer pageNum,Integer pageSize,String name,String id,String userName){
         if(pageNum==null){
             pageNum=1;
         }
@@ -27,13 +27,24 @@ public class GoodsController {
         PageBean<Goods> goodsPageBean=null;
         Integer role =(Integer) ((HashMap<String, Object>) ThreadLocalUtils.get()).get("role");
         if(role==0){
-            goodsPageBean= goodsServer.getGoodsList(pageNum,pageSize,name,id);
+            goodsPageBean= goodsServer.getGoodsList(pageNum,pageSize,name,id,userName);
         }
         if(role==1){
             String  userId =(String)((HashMap<String, Object>) ThreadLocalUtils.get()).get("id");
             goodsPageBean = goodsServer.getGoodsListByUserId(pageNum, pageSize, name, id,userId);
         }
         return Result.success(goodsPageBean);
+    }
+    @GetMapping("/shopping")
+    public Result getListByUserForShopping(Integer pageNum,Integer pageSize,String name,String id){
+        if(pageNum==null){
+            pageNum=1;
+        }
+        if(pageSize==null){
+            pageSize=8;
+        }
+        PageBean<Goods> goodsList = goodsServer.getGoodsListForShopping(pageNum, pageSize, name, id);
+        return Result.success(goodsList);
     }
 
     @PostMapping
@@ -58,5 +69,6 @@ public class GoodsController {
         Goods goodsById = goodsServer.getGoodsById(id);
         return Result.success(goodsById);
     }
+
 
 }

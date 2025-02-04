@@ -16,7 +16,7 @@ public interface ColdChainCarMapper {
     @Select("select * from cold_chain_car where id=#{id}")
     ColdChainCar selectColdChainCarById(String id);
 
-    void updateDriver(ColdChainCar coldChainCar);
+    void updateCar(ColdChainCar coldChainCar);
 
     void addColdChainCa(ColdChainCar coldChainCar);
 

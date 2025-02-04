@@ -18,7 +18,8 @@ const searchBody = ref({
     name: '',
     id: '',
     pageSize: 8,
-    pageNum: 1
+    pageNum: 1,
+    status:''
 })
 const dialogVisible = ref(false);
 const tableData = ref([])
@@ -67,7 +68,6 @@ const loadingAreaModel = () => {
     driverModel.value.areaModel = locationStorage().location;
 }
 const search = async () => {
-    console.log("searchBody.value=",searchBody.value);
     const result = await getDriverListServer(searchBody);
     tableData.value = result.data.items;
     allNumber.value = result.data.total;
@@ -94,7 +94,7 @@ const add = () => {
 const editButton = (row) => {
     driverModel.value = JSON.parse(JSON.stringify(row));
     loadingAreaModel();
-    driverModel.value.sex = driverModel.value.sex + "";//转成字符串，否则表达加载不出来
+    driverModel.value.sex = driverModel.value.sex + "";
     driverModel.value.status = driverModel.value.status + ""
     console.log(driverModel.value);
     title.value = "编辑"
@@ -164,13 +164,14 @@ const deleteButton = async (row) => {
         <el-card>
             <template #header>
                 <div>
-                    <el-input v-model="searchBody.id" style="width: 200px" placeholder="用户编号" :prefix-icon="Search" />
-                    <el-input v-model="searchBody.name" style="width: 200px;margin-left:10px" placeholder="用户姓名"
+                    <el-input v-model="searchBody.id" style="width: 200px" placeholder="司机编号" :prefix-icon="Search" />
+                    <el-input v-model="searchBody.name" style="width: 200px;margin-left:10px" placeholder="司机姓名"
                         :prefix-icon="Search" />
                     
                     <el-select v-model="searchBody.status" style="width: 200px;margin-left: 10px;" placeholder="请选择状态" >
                         <el-option label="空闲" value="1" />
-                        <el-option label="繁忙" value="2" />
+                        <el-option label="待发车" value="2" />
+                        <el-option label="运输中" value="3" />
                     </el-select>
 
                     <el-button type="primary" style="margin-left: 10px;" @click="search()">搜索</el-button>
@@ -195,7 +196,7 @@ const deleteButton = async (row) => {
                     <el-table-column prop="status" label="当前状态">
                         <template #default="scope">
                             <el-tag :type="scope.row.status == 1 ? 'primary' :(scope.row.status == 2?'warning':'danger')" disable-transitions>
-                                {{ scope.row.status == 1 ? '空闲' :( scope.row.status == 2?'繁忙':'禁职' )}}
+                                {{ scope.row.status == 1 ? '空闲' :( scope.row.status == 2?'待发车':'运输中' )}}
                             </el-tag>
                         </template>
                     </el-table-column>
@@ -256,11 +257,11 @@ const deleteButton = async (row) => {
                         </el-radio-group>
                     </el-form-item>
 
-                    <el-form-item label="状态" prop="status">
+                    <el-form-item label="状态" prop="status" v-if="title=='编辑'">
                         <el-radio-group v-model="driverModel.status">
-                            <el-radio value=1>空闲</el-radio>
-                            <el-radio value=2>繁忙</el-radio>
-                            <el-radio value=3>禁用</el-radio>
+                            <el-radio value="1">空闲</el-radio>
+                            <el-radio value="2">待发车</el-radio>
+                            <el-radio value="3">运输中</el-radio>
                         </el-radio-group>
                     </el-form-item>
 

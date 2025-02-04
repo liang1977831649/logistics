@@ -9,10 +9,11 @@ import {loadingUserInfoServer} from "@/api/userInfoApi"
 import userInfoServer from "@/storage/userStorage.js"
 import {getAreaList} from "@/api/areaApi.js"
 import localStorage from "@/storage/locationStorage.js"
+import {addMoneyAccountServer} from "@/api/moneyApi"
 //==============================================数据区=================================================
 const routers=routerStorage();
 const tabs = ref([])
-
+const moneyModel=ref({});
 //==============================================方法区=================================================
 const getMenu = async () => {
   const result = await getMenuServer();
@@ -58,6 +59,13 @@ const loadingLocation= async(areaId)=>{
   const result= await getAreaList(areaId);
   localStorage().setLocation(result.data)
 }
+
+//加载是否具备银行账户
+const loadingMoney=async()=>{
+  await addMoneyAccountServer(moneyModel);
+}
+loadingMoney()
+
 </script>
 
 <template>

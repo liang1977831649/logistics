@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.logistics.mapper.GoodsCostMapper">
+
+    <insert id="insertGoodsCost">
+        insert into goods_cost value (#{id},#{buyerId},#{salesId},#{deliId},#{cost},1,now());
+    </insert>
+    <update id="updateCostMapper">
+        update goods_cost
+        <set>
+            <if test="cost!=null and cost!=''">
+                cost=#{cost}
+            </if>
+            <if test="status!=null and status!=''">
+                ,status=#{status}
+            </if>
+        </set>
+        where id=#{id}
+    </update>
+    <!--<select id="selectGoodsCostListByUserId" resultType="com.logistics.entity.GoodsCost">-->
+    <!--    select goods_cost.*, user.name as salesName, goods.name as goodsName,goods.id as goodsId-->
+    <!--    from goods_cost-->
+    <!--    left join-->
+    <!--    (delivery left join-->
+    <!--    (goods left join user on goods.user_id = user.id)-->
+    <!--    on delivery.goods_id = goods.id)-->
+    <!--    on goods_cost.deli_id = delivery.id and goods_cost.sales_id = #{userId}-->
+    <!--    <where>-->
+    <!--        <if test="userName !=null and userName!=''">-->
+    <!--            user.name like concat('%',#{userName},'%')-->
+    <!--        </if>-->
+    <!--        <if test="deliId !=null and deliId!=''">-->
+    <!--            and goods_cost.deli_id like concat('%',#{deliId},'%')-->
+    <!--        </if>-->
+    <!--        <if test="goodsName!=null and goodsName!=''">-->
+    <!--            and goods.name like concat('%',#{goodsName},'%')-->
+    <!--        </if>-->
+    <!--        <if test="status!=null">-->
+    <!--            and goods_cost.status=#{status}-->
+    <!--        </if>-->
+    <!--    </where>-->
+    <!--</select>-->
+    <select id="selectGoodsCostListByUserId" resultType="com.logistics.entity.GoodsCost">
+        select goods_cost.*,user.name as userName,goods.name as goodsName,goods.id as goodsId from goods_cost left join
+        (delivery left join goods on delivery.goods_id=goods.id)
+        on goods_cost.deli_id=delivery.id,user
+        <where>
+            <if test="type==1">
+                goods_cost.sales_id=user.id
+                and goods_cost.buyer_id=#{userId}
+            </if>
+            <if test="type==2">
+                goods_cost.buyer_id=user.id
+                and goods_cost.sales_id=#{userId}
+            </if>
+            <if test="userName !=null and userName!=''">
+                and user.name like concat('%',#{userName},'%')
+            </if>
+            <if test="id!=null and id!=''">
+                and goods_cost.id like concat('%',#{id},'%')
+            </if>
+            <if test="goodsName!=null and goodsName!=''">
+                and goods.name like concat('%',#{goodsName},'%')
+            </if>
+            <if test="status!=null">
+                and goods_cost.status=#{status}
+            </if>
+        </where>
+    </select>
+    <select id="selectGoodsCostByIdForDetail" resultType="com.logistics.entity.GoodsCost">
+        select goods_cost.*,goods.name as goodsName,delivery.weight,goods.id as goodsId
+        from goods_cost left join
+            (delivery left join goods on delivery.goods_id=goods.id)
+            on goods_cost.deli_id=delivery.id
+        where goods_cost.id=#{id}
+    </select>
+</mapper>

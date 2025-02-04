@@ -25,7 +25,10 @@ export const deleteServer =async (id)=>{
     await request.delete("/refrigerate/"+id);
 }
 
-export const detailServer=async(id)=>{
+export const detailRefrigerateServer=async(id)=>{
     const result=await request.get("/refrigerate/detail/"+id);
     return result
+}
+export const inRoomServer= async(rmGs)=>{
+    await request.post("/refrigerate/inRoom",rmGs.value);
 }

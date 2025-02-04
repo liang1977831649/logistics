@@ -25,3 +25,7 @@ export const updateServer=async(coldChainCarModel)=>{
 export const deleteServer =async (id)=>{
     await request.delete("/coldChainCar/"+id);
 }
+export const detailCarServer=async (carId)=>{
+   const result= await request.get("/coldChainCar/detail/"+carId);
+   return result;
+}

@@ -111,18 +111,18 @@ const onChange = (e) => {
           <el-input v-model="userModel.name" />
         </el-form-item>
 
-        <el-form-item label="电话" prop="phone" v-if="user.userInfo==1">
+        <el-form-item label="电话" prop="phone" v-if="user.userInfo.role==1">
           <el-input type="number" v-model="userModel.phone" />
         </el-form-item>
 
-        <el-form-item label="性别" prop="sex" v-if="user.userInfo==1">
+        <el-form-item label="性别" prop="sex" v-if="user.userInfo.role==1">
           <el-radio-group v-model="userModel.sex">
             <el-radio value=0>女</el-radio>
             <el-radio value=1>男</el-radio>
           </el-radio-group>
         </el-form-item>
 
-        <el-form-item label="地区" prop="areaModel" v-if="user.userInfo==1">
+        <el-form-item label="地区" prop="areaModel" v-if="user.userInfo.role==1">
           <elui-china-area-dht placeholder="请选择" v-model="userModel.areaModel" @change="onChange"></elui-china-area-dht>
         </el-form-item>
 

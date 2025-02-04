@@ -19,5 +19,9 @@ public interface GoodsMapper {
 
     void deleteGoodsById(String id);
 
-    List<Goods> selectGoodsAll(String name,String id);
+    List<Goods> selectGoodsAll(String name,String id,String areaId,String userName);
+
+    Goods detailGoodsByIdLinkRefrigerate(String id);
+
+    List<Goods> selectGoodsAllForShopping(String name, String id, String areaId,String  userId);
 }

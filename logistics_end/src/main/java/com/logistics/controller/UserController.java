@@ -68,4 +68,10 @@ public class UserController {
         return Result.success("成功！");
     }
 
+    @GetMapping("/detail/{id}")
+    public Result detailUser(@PathVariable String id){
+        User user=userServer.detailUser(id);
+        return Result.success(user);
+    }
+
 }

@@ -8,7 +8,18 @@ export default {
 //=======================引用区==========================
 import { ref ,shallowRef} from 'vue'
 import Aside from "@/components/Aside.vue"
-import {Magnet, Avatar, HomeFilled,UserFilled,User,House,Watermelon} from '@element-plus/icons-vue'
+import {Magnet,
+     Avatar, 
+     HomeFilled,
+     UserFilled,
+     User,House,
+     Watermelon,
+     Connection,
+     CirclePlus,
+     Goods,
+     Paperclip,
+     Money,
+     CircleCheck} from '@element-plus/icons-vue'
 //=======================数据区==========================
 //图标
 const iconList = shallowRef({
@@ -18,7 +29,13 @@ const iconList = shallowRef({
     "User":User,
     "Magnet":Magnet,
     "House":House,
-    "Watermelon":Watermelon
+    "Watermelon":Watermelon,
+    "Connection":Connection,
+    "CirclePlus":CirclePlus,
+    "Goods":Goods,
+    "Paperclip":Paperclip,
+    "Money":Money,
+    "CircleCheck":CircleCheck
 })
 // 回应了父类组件传过来的tabs
 const props = defineProps({

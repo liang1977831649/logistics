@@ -21,7 +21,7 @@
             <if test="curVolume!=null">
                 ,cur_volume=#{curVolume}
             </if>
-            <if test="maxVolume!=null and maxVolume!=0">
+            <if test="maxVolume!=null ">
                 ,max_volume=#{maxVolume}
             </if>
             <if test="status!=null ">
@@ -40,13 +40,13 @@
             refrigerate_room.ccc_id=cold_chain_center.id
             and cold_chain_center.area_id=#{areaId}
             <if test="name!=null and name!=''">
-                and name like concat('%',#{name},'%')
+                and refrigerate_room.name like concat('%',#{name},'%')
             </if>
             <if test="id!=null and id!=''">
-                and id like concat('%',#{id},'%')
+                and refrigerate_room.id like concat('%',#{id},'%')
             </if>
             <if test="status!=null">
-                and status=#{status}
+                and refrigerate_room.status=#{status}
             </if>
         </where>
     </select>

@@ -31,12 +31,12 @@ public class ColdChainCarController {
         return Result.success(driverPageBean);
     }
     @PutMapping
-    public Result update(@RequestBody @Validated(ColdChainCar.Update.class) ColdChainCar coldChainCar){
+    public Result update(@RequestBody @Validated ColdChainCar coldChainCar){
         coldChainCarServer.updateColdChainCar(coldChainCar);
         return Result.success();
     }
     @PostMapping
-    public Result add(@RequestBody @Validated ColdChainCar coldChainCar){
+    public Result add(@RequestBody @Validated(ColdChainCar.Add.class) ColdChainCar coldChainCar){
         coldChainCarServer.addColdChainCar(coldChainCar);
         return Result.success();
     }
@@ -44,5 +44,10 @@ public class ColdChainCarController {
     public Result del(@PathVariable String id){
         coldChainCarServer.deleteColdChainCarById(id);
         return Result.success();
+    }
+    @GetMapping("/detail/{carId}")
+    public Result detailCar(@PathVariable String carId){
+        ColdChainCar coldChainCar= coldChainCarServer.detailCar(carId);
+        return Result.success(coldChainCar);
     }
 }

@@ -2,7 +2,7 @@
 // =====================================引用区 =====================================
 import { ref } from "vue";
 import { Search } from '@element-plus/icons-vue'
-import { getRefrigerateListServer, addServer, updateServer, deleteServer, detailServer } from "@/api/refrigerateApi.js"
+import { getRefrigerateListServer, addServer, updateServer, deleteServer, detailRefrigerateServer } from "@/api/refrigerateApi.js"
 import { ElMessage, ElMessageBox } from "element-plus"
 import userInfoServer from "@/storage/userStorage"
 import { getColdChainCenterList } from "@/api/ColdChainCenterApi.js"
@@ -15,6 +15,8 @@ const allNumber = ref(100)
 const searchBody = ref({
     id: "",
     name: "",
+    pageNum: 1,
+    pageSize: 8
 })
 const dialogVisible = ref(false);
 const tableData = ref([])
@@ -143,9 +145,9 @@ const detail = async (row) => {
     if (form.value != null) {
         form.value.resetFields();
     }
-    const result = await detailServer(row.id);
+    const result = await detailRefrigerateServer(row.id);
     refrigerateModel.value = result.data
-    console.log("refrigerateModel.value=", refrigerateModel.value);
+    refrigerateModel.value.status=refrigerateModel.value.status+''
     visibleDrawer.value = true;
 }
 </script>
@@ -174,7 +176,12 @@ const detail = async (row) => {
                             {{ scope.row.curVolume + "/" + scope.row.maxVolume }}
                         </template>
                     </el-table-column>
-                    <el-table-column prop="centreName" label="仓库">
+                    <el-table-column label="温湿度">
+                        <template #default="scope">
+                            {{ scope.row.tem + "°C/" + scope.row.hum + "%" }}
+                        </template>
+                    </el-table-column>
+                    <el-table-column prop="centreName" label="冷链中心">
                         <template #default="scope">
                             <el-tag type="primary">
                                 {{ scope.row.centreName }}
@@ -227,7 +234,7 @@ const detail = async (row) => {
                     </el-form-item>
 
                     <el-form-item label="所属中心" prop="cccId">
-                        <el-select  placeholder="请选择" v-model="refrigerateModel.cccId">
+                        <el-select placeholder="请选择" v-model="refrigerateModel.cccId">
                             <el-option v-for="c in coldChainCenterList" :value="c.id" :label="c.name">
                             </el-option>
                         </el-select>
@@ -257,7 +264,7 @@ const detail = async (row) => {
                 </el-form-item>
 
                 <el-form-item label="当前体积" prop="curVolume">
-                    <el-input type="number" v-model="refrigerateModel.curVolume" disabled />
+                    <el-input type="number" v-model="refrigerateModel.curVolume" />
                 </el-form-item>
 
                 <el-form-item label="体积" prop="maxVolume">
@@ -272,13 +279,15 @@ const detail = async (row) => {
                     <el-input type="number" v-model="refrigerateModel.hum" />
                 </el-form-item>
 
-                <el-form-item label="当前状态" prop="status">
-                    <el-input v-model="refrigerateModel.status" disabled
-                        :label="refrigerateModel.status == 1 ? '空闲' : '装载'" />
+                <el-form-item label="状态" prop="status">
+                    <el-radio-group v-model="refrigerateModel.status">
+                        <el-radio value=1>空闲</el-radio>
+                        <el-radio value=2>装载</el-radio>
+                    </el-radio-group>
                 </el-form-item>
 
                 <el-form-item label="所属冷链中心">
-                    <el-input v-model="refrigerateModel.centreName" disabled />
+                    <el-input v-model="refrigerateModel.centreName" />
                 </el-form-item>
 
                 <el-form-item label="创建时间">
