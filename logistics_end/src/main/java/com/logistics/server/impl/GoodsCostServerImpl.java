@@ -7,6 +7,8 @@ import com.logistics.mapper.GoodsCostMapper;
 import com.logistics.mapper.UserMapper;
 import com.logistics.server.GoodsCostServer;
 import com.logistics.utils.ThreadLocalUtils;
+import io.netty.util.internal.ObjectUtil;
+import io.netty.util.internal.StringUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -72,6 +74,11 @@ public class GoodsCostServerImpl implements GoodsCostServer {
 
     @Override
     public void updateGoodsCost(GoodsCost goodsCost) {
+        String id =(String)((HashMap<String, Object>) ThreadLocalUtils.get()).get("id");
+        //如果状态为空，那就是改价操作,//如果是自己操作，那就可以改价
+        if( goodsCost.getStatus()==null&&!id.equals(goodsCost.getSalesId())){
+            throw new RuntimeException("您不是供应商，改价失败");
+        }
         goodsCostMapper.updateCostMapper(goodsCost);
     }
 }

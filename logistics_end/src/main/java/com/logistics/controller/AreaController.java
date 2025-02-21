@@ -17,6 +17,7 @@ public class AreaController {
     @Autowired
     AreasServer areasServer;
     @GetMapping("/getArea/{areaId}")
+    //获取自己所在的省县ID
     public Result getAreaList(@PathVariable String areaId){
         List<String> provinceIdAndCityIdAndAreaIdByAreaId = areasServer.getProvinceIdAndCityIdAndAreaIdByAreaId(areaId);
         return Result.success(provinceIdAndCityIdAndAreaIdByAreaId);

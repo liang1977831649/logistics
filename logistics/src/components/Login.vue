@@ -1,11 +1,11 @@
-<script setup>
+<script  setup>
 //------------------------引用区----------------------------
 import { ref } from "vue"
 import { User, Lock } from '@element-plus/icons-vue'
-import { ElMessage } from "element-plus"
+import { ElMessage, ElMessageBox } from 'element-plus'
 import { useRouter } from "vue-router";
 import { EluiChinaAreaDht } from 'elui-china-area-dht'
-import { loginServer, registerServer } from "@/api/loginAndRegister"
+import { loginServer, registerServer, getAdminPhone } from "@/api/loginAndRegister"
 import useToken from "@/storage/tokenStorage.js"
 //------------------------数据定义区--------------------------
 const router = useRouter()
@@ -19,6 +19,10 @@ const options = ref([
     {
         value: '1',
         label: '用户',
+    },
+    {
+        value:'2',
+        label:'超管'
     }
 ])
 
@@ -75,8 +79,9 @@ const registerRules = {
         { required: true, message: '请选择地区', trigger: 'blur' },
     ]
 }
-
-const moneyModel=ref({})
+const areaId = ref("");
+const dialogPwdWindows = ref(false)
+const phone = ref("");
 // ---------------------==============方法区-----------------------
 const clearRegisterBody = () => {
     registerBody.value = {};
@@ -88,6 +93,14 @@ const onChange = (e) => {
     registerBody.value.areaModel = JSON.parse(JSON.stringify(e));
     registerBody.value.area = three.label;
     registerBody.value.areaId = three.value;
+}
+
+const changeGetPassword = async (e) => {
+    const three = chinaData[e[2]];
+    areaId.value = three.value;
+    const result = await getAdminPhone(areaId.value);
+
+    phone.value=result.data;
 }
 
 const login = () => {
@@ -116,87 +129,109 @@ const register = () => {
         }
     })
 }
+
+
 </script>
 
 <template>
-    <el-row class="login-page">
-        <el-col :span="13" class="bg"></el-col>
-        <el-col :span="7" :offset="3" class="form">
-            <!-- 注册表单 -->
-            <el-card v-if="isRegister">
-                <el-form autocomplete="off" :model="registerBody" :rules="registerRules" ref="form">
-                    <el-form-item class="title_font">
-                        <span>农产品冷链物流系统</span>
-                    </el-form-item>
-                    <el-form-item class="title_font">
-                        <span>注册</span>
-                    </el-form-item>
-                    <el-form-item prop="id">
-                        <el-input :prefix-icon="User" placeholder="请输入账号" v-model="registerBody.id"></el-input>
-                    </el-form-item>
-                    <el-form-item prop="password">
-                        <el-input :prefix-icon="Lock" type="password" placeholder="请输入密码"
-                            v-model="registerBody.password"></el-input>
-                    </el-form-item>
-                    <el-form-item prop="rePassword">
-                        <el-input :prefix-icon="Lock" type="password" placeholder="请输入再次密码"
-                            v-model="registerBody.rePassword"></el-input>
-                    </el-form-item>
-                    <el-form-item prop="areaModel">
-                        <elui-china-area-dht placeholder="请选择地区" v-model="registerBody.areaModel"
-                            @change="onChange"></elui-china-area-dht>
-                    </el-form-item>
-                    <!-- 注册按钮 -->
-                    <el-form-item>
-                        <el-button class="button" type="primary" auto-insert-space @click="register"> 注册 </el-button>
-                    </el-form-item>
-                    <el-form-item class="flex">
-                        <el-link type="info" :underline="false" @click="isRegister = false;">
-                            ← 返回
-                        </el-link>
-                    </el-form-item>
-                </el-form>
-            </el-card>
-            <!-- 登录表单 -->
-            <el-card v-else>
-                <el-form autocomplete="off" :model="loginBody" :rules="loginRules" ref="form">
-                    <el-form-item class="title_font">
-                        <span>农产品物流冷链系统</span>
-                    </el-form-item>
-                    <el-form-item class="title_font">
-                        <span>登录</span>
-                    </el-form-item>
-                    <el-form-item prop="id">
-                        <el-input :prefix-icon="User" placeholder="请输入账号" v-model="loginBody.id"></el-input>
-                    </el-form-item>
-                    <el-form-item prop="password">
-                        <el-input :prefix-icon="Lock" type="password" placeholder="请输入密码"
-                            v-model="loginBody.password"></el-input>
-                    </el-form-item>
-                    <el-form-item prop="role">
-                        <el-select placeholder="请选择身份" v-model="loginBody.role">
-                            <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value" />
-                        </el-select>
-                    </el-form-item>
-                    <el-form-item class="flex">
-                        <div class="flex">
-                            <el-checkbox>记住我</el-checkbox>
-                            <el-link type="primary" :underline="false">忘记密码？</el-link>
-                        </div>
-                    </el-form-item>
-                    <!-- 登录按钮 -->
-                    <el-form-item>
-                        <el-button class="button" type="primary" auto-insert-space @click="login">登录</el-button>
-                    </el-form-item>
-                    <el-form-item class="flex">
-                        <el-link type="info" :underline="false" @click="isRegister = true;">
-                            注册 →
-                        </el-link>
-                    </el-form-item>
-                </el-form>
-            </el-card>
-        </el-col>
-    </el-row>
+    <div>
+        <el-row class="login-page">
+            <el-col :span="13" class="bg"></el-col>
+            <el-col :span="7" :offset="3" class="form">
+                <!-- 注册表单 -->
+                <el-card v-if="isRegister">
+                    <el-form autocomplete="off" :model="registerBody" :rules="registerRules" ref="form">
+                        <el-form-item class="title_font">
+                            <span>农产品冷链物流系统</span>
+                        </el-form-item>
+                        <el-form-item class="title_font">
+                            <span>注册</span>
+                        </el-form-item>
+                        <el-form-item prop="id">
+                            <el-input :prefix-icon="User" placeholder="请输入账号" v-model="registerBody.id"></el-input>
+                        </el-form-item>
+                        <el-form-item prop="password">
+                            <el-input :prefix-icon="Lock" type="password" placeholder="请输入密码"
+                                v-model="registerBody.password"></el-input>
+                        </el-form-item>
+                        <el-form-item prop="rePassword">
+                            <el-input :prefix-icon="Lock" type="password" placeholder="请输入再次密码"
+                                v-model="registerBody.rePassword"></el-input>
+                        </el-form-item>
+                        <el-form-item prop="areaModel">
+                            <elui-china-area-dht placeholder="请选择地区" v-model="registerBody.areaModel"
+                                @change="onChange"></elui-china-area-dht>
+                        </el-form-item>
+                        <!-- 注册按钮 -->
+                        <el-form-item>
+                            <el-button class="button" type="primary" auto-insert-space @click="register"> 注册 </el-button>
+                        </el-form-item>
+                        <el-form-item class="flex">
+                            <el-link type="info" :underline="false" @click="isRegister = false;">
+                                ← 返回
+                            </el-link>
+                        </el-form-item>
+                    </el-form>
+                </el-card>
+                <!-- 登录表单 -->
+                <el-card v-else>
+                    <el-form autocomplete="off" :model="loginBody" :rules="loginRules" ref="form">
+                        <el-form-item class="title_font">
+                            <span>农产品冷链物流系统</span>
+                        </el-form-item>
+                        <el-form-item class="title_font">
+                            <span>登录</span>
+                        </el-form-item>
+                        <el-form-item prop="id">
+                            <el-input :prefix-icon="User" placeholder="请输入账号" v-model="loginBody.id"></el-input>
+                        </el-form-item>
+                        <el-form-item prop="password">
+                            <el-input :prefix-icon="Lock" type="password" placeholder="请输入密码"
+                                v-model="loginBody.password"></el-input>
+                        </el-form-item>
+                        <el-form-item prop="role">
+                            <el-select placeholder="请选择身份" v-model="loginBody.role">
+                                <el-option v-for="item in options" :key="item.value" :label="item.label"
+                                    :value="item.value" />
+                            </el-select>
+                        </el-form-item>
+                        <el-form-item class="flex">
+                            <div class="flex">
+                                <el-checkbox>记住我</el-checkbox>
+                                <el-link type="primary" :underline="false" @click="dialogPwdWindows = true">忘记密码？</el-link>
+                            </div>
+                        </el-form-item>
+                        <!-- 登录按钮 -->
+                        <el-form-item>
+                            <el-button class="button" type="primary" auto-insert-space @click="login">登录</el-button>
+                        </el-form-item>
+                        <el-form-item class="flex">
+                            <el-link type="info" :underline="false" @click="isRegister = true;">
+                                注册 →
+                            </el-link>
+                        </el-form-item>
+                    </el-form>
+                </el-card>
+            </el-col>
+        </el-row>
+        <!-- 忘记密码 -->
+        <div>
+            <el-dialog v-model="dialogPwdWindows" append-to-body width="300px">
+                <div>
+                    <elui-china-area-dht placeholder="请选择地区" v-model="registerBody.areaModel"
+                        @change="changeGetPassword"></elui-china-area-dht>
+                </div>
+                <span>管理员电话：</span>
+                <span>{{ phone }}</span>
+                <template #footer>
+                    <span class="dialog-footer">
+                        <el-button type="primary" @click="dialogPwdWindows = false">确认</el-button>
+                    </span>
+                </template>
+            </el-dialog>
+
+        </div>
+    </div>
 </template>
 
 <style lang="scss" scoped>

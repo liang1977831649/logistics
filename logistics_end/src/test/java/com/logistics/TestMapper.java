@@ -6,6 +6,7 @@ import com.logistics.server.DeliveryServer;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -31,6 +32,8 @@ public class TestMapper {
     MoneyMapper moneyMapper;
     @Autowired
     GoodsCostMapper goodsCostMapper;
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
 
     @Test
@@ -46,10 +49,9 @@ public class TestMapper {
     }
     @Test
     public void test3(){
-        Account account = new Account();
-        account.setId("123456");
-        Admin adminById = webMapper.getAdminById(account);
-        System.out.println(adminById.getAreaId());
+        if(passwordEncoder.matches("1234565","$2a$10$Nl0K1FlfaJXACGuDrnTWrecqmvB0b3ShFhITye57pFdRQXlL2urre")){
+            System.out.println("密码正确");
+        }
     }
     @Test
     public void test4(){

@@ -16,9 +16,9 @@ public interface RoomCostMapper {
 
     RoomCost selectRoomCostById(String id);
 
-    List<RoomCost> selectRoomCostList(String userId, String deliId, String status,String goodsName);
+    List<RoomCost> selectRoomCostList(String userId, String deliId, Integer status,String goodsName);
 
-    List<RoomCost> selectRoomCostListForAdmin(String userId, String deliId, String status, String goodsName,String areaId);
+    List<RoomCost> selectRoomCostListForAdmin(String userId, String deliId, Integer status, String goodsName,String areaId);
 
 
     void updateRoomCost(RoomCost roomCost);

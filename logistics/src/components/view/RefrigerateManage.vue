@@ -173,7 +173,7 @@ const detail = async (row) => {
                     <el-table-column prop="name" label="名称" />
                     <el-table-column prop="volume" label="容量">
                         <template #default="scope">
-                            {{ scope.row.curVolume + "/" + scope.row.maxVolume }}
+                            {{ scope.row.curVolume + "/" + scope.row.maxVolume+"m³" }}
                         </template>
                     </el-table-column>
                     <el-table-column label="温湿度">

@@ -53,7 +53,7 @@ const handleCommand = (command) => {
 <template>
     <div >
         <el-image :src="logoHeader" style="width: 38px;height: 38px;vertical-align:middle;margin-left: 20px;"></el-image>
-        <span style="margin-left: 10px;">{{"农产品冷链物流平台"+(user.userInfo.role==0?'—后台管理':'')}}</span>
+        <span style="margin-left: 10px;">{{"农产品冷链物流平台"+(user.userInfo.role!=1?'—后台管理':'')}}</span>
     </div>
     <div>
         <div style="float: left; margin-right: 20px;margin-top: 5px;"><strong>{{ user.userInfo.name?user.userInfo.name:'张XX' }}</strong></div>

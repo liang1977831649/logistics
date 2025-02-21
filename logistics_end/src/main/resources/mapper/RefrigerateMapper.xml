@@ -57,4 +57,8 @@
         select refrigerate_room.* from refrigerate_room,room_goods
         where refrigerate_room.id=room_goods.rm_id and room_goods.goods_id=#{goodsId}
     </select>
+    <select id="selectRefrigerateByCccId" resultType="com.logistics.entity.Refrigerate">
+        select id, name, status, ccc_id from refrigerate_room
+        where ccc_id=#{cccId}
+    </select>
 </mapper>

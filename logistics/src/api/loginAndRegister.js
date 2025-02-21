@@ -16,3 +16,7 @@ export const registerServer=async(registerBody)=>{
     }
      await request.post("/register",param)
 }
+
+export const getAdminPhone=async (areaId)=>{
+    return await request.get("/getPhone/"+areaId)
+}

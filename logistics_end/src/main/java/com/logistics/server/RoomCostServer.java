@@ -8,7 +8,7 @@ import java.util.List;
 public interface RoomCostServer {
     void addRoomCost(String userId,String deliId,Integer days,Float cost);
 
-    PageBean<RoomCost> selectRoomCostByUserId(Integer pageNum, Integer pageSize,String userId, String deliId, String status,String goodsName);
+    PageBean<RoomCost> selectRoomCostByUserId(Integer pageNum, Integer pageSize,String userId, String deliId, Integer status,String goodsName);
 
     void updatePriceRoomCost(RoomCost roomCost);
 

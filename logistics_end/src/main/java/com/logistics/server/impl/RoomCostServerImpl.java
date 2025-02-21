@@ -38,7 +38,7 @@ public class RoomCostServerImpl implements RoomCostServer {
     }
 
     @Override
-    public PageBean<RoomCost> selectRoomCostByUserId(Integer pageNum, Integer pageSize,String userId, String deliId, String status,String goodsName) {
+    public PageBean<RoomCost> selectRoomCostByUserId(Integer pageNum, Integer pageSize,String userId, String deliId, Integer status,String goodsName) {
         PageHelper.startPage(pageNum, pageSize);
 
         Integer role=(Integer) ((HashMap<String,Object>)ThreadLocalUtils.get()).get("role");

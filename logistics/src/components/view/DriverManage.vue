@@ -140,6 +140,10 @@ const cancelButton = () => {
 }
 
 const deleteButton = async (row) => {
+    if(row.status!=1){
+        ElMessage.error('删除失败，状态不为空闲');
+        return ;
+    }
     ElMessageBox.confirm(
         '你确认要删除该司机信息吗?',
         '温馨提示',

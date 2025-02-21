@@ -4,6 +4,7 @@ import com.logistics.entity.*;
 import com.logistics.server.DriverServer;
 import com.logistics.utils.ThreadLocalUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,6 +17,7 @@ public class DriverController {
     private DriverServer driverServer;
 
     @GetMapping("/list")
+    @PreAuthorize("@ex.verificationHandler(0)")
     public Result getDriverByAreaId(Integer pageNum, Integer pageSize, String name, String id,Integer status){
         if(pageNum==null){
             pageNum=1;
@@ -29,16 +31,19 @@ public class DriverController {
         return Result.success(driverPageBean);
     }
     @PutMapping
+    @PreAuthorize("@ex.verificationHandler(0)")
     public Result update(@RequestBody @Validated Driver driver){
         driverServer.updateDriver(driver);
         return Result.success();
     }
     @PostMapping
+    @PreAuthorize("@ex.verificationHandler(0)")
     public Result add(@RequestBody @Validated Driver driver){
         driverServer.addDriver(driver);
         return Result.success();
     }
     @DeleteMapping("/{id}")
+    @PreAuthorize("@ex.verificationHandler(0)")
     public Result del(@PathVariable String id){
         driverServer.deleteDriverById(id);
         return Result.success();

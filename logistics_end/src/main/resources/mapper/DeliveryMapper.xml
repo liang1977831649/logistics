@@ -30,7 +30,6 @@
             <if test="departTime!=null">
                 , departTime=#{departTime}
             </if>
-
         </set>
         where id=#{id}
     </update>
@@ -54,14 +53,14 @@
             </if>
         </where>
     </select>
-    <!--这里的selectDeliveryByTsCarId用于删除Delivery。因为删除这个运输总单，不能存在运输子单（1，2）挂着它-->
+    <!--这里的selectDeliveryByTsCarId用于删除Delivery。因为删除这个运输总单，不能存在配送子单（1，2）挂着它-->
     <select id="selectDeliveryByTsCarId" resultType="com.logistics.entity.Delivery">
         select *
         from delivery
         where car_dri_id = #{tsCarId}
           and  status != 3 and status != 4;;
     </select>
-    <!--这里的selectDeliveryByTsCarIdLimitStatusTow用于查询状态为运输为2的。因为其余的状态下，car和driver的状态时都可以是2-->
+    <!--这里的selectDeliveryByTsCarIdLimitStatusTow用于查询状态为2的。因为其余的状态下，car和driver的状态时都可以是2-->
     <select id="selectDeliveryByTsCarIdLimitStatusTow" resultType="com.logistics.entity.Delivery">
         select *
         from delivery
@@ -75,6 +74,24 @@
         where delivery.goods_id = goods.id
           and goods.id = #{goodsId}
           and delivery.status = 1;
+    </select>
+    <select id="selectDeliveryByUserId" resultType="com.logistics.entity.Delivery">
+        select id, user_id, goods_id, volume, weight, destination, car_dri_id, status, departTime, updateTime from
+        delivery
+        <where>
+            <if test="id!=null and id!=''">
+                id=#{id}
+            </if>
+            <if test="userId!=null and userId!=''">
+                and user_id=#{userId}
+            </if>
+            <if test="status!=null ">
+                and status!=#{status}
+            </if>
+            <if test="carDriId!=null and carDriId!=''">
+                and car_dri_id=#{carDriId}
+            </if>
+        </where>
     </select>
 
 </mapper>

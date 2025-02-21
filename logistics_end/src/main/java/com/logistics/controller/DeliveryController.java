@@ -7,6 +7,7 @@ import com.logistics.entity.Result;
 import com.logistics.server.DeliveryServer;
 import com.logistics.utils.ThreadLocalUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,6 +19,7 @@ public class DeliveryController {
     @Autowired
     DeliveryServer deliveryServer;
     @PostMapping
+    //购买
     public Result addDelivery(@RequestBody @Validated(Delivery.Add.class) Delivery delivery){
         deliveryServer.addDelivery(delivery);
         return Result.success();
@@ -41,24 +43,30 @@ public class DeliveryController {
     }
 
     @DeleteMapping("/{id}")
+    //删除
     public Result deleteDelivery(@PathVariable String id){
         deliveryServer.deleteDeliveryById(id);
         return Result.success();
     }
 
     @PutMapping("/loading")
+    //装配
+    @PreAuthorize("@ex.verificationHandler(0)")
     public Result updateDelivery(@RequestBody @Validated(Delivery.Loading.class) Delivery delivery){
         deliveryServer.changeLoadingDeliveryToCar(delivery);
         return Result.success();
     }
 
     @GetMapping("/arrival/{id}")
+    //已抵达
+    @PreAuthorize("@ex.verificationHandler(0)")
     public Result arrival(@PathVariable String id){
         deliveryServer.arrival(id);
         return Result.success();
     }
 
     @GetMapping("/receipt/{id}")
+    //收货
     public Result receiptGoods(@PathVariable  String id){
         deliveryServer.receiptGoods(id);
         return Result.success();

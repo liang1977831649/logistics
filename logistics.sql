@@ -5,13 +5,13 @@
  Source Server Type    : MySQL
  Source Server Version : 50719
  Source Host           : localhost:3306
- Source Schema         : logistics
+ Source Schema         : logistics_security6
 
  Target Server Type    : MySQL
  Target Server Version : 50719
  File Encoding         : 65001
 
- Date: 04/02/2025 20:14:40
+ Date: 20/02/2025 23:04:07
 */
 
 SET NAMES utf8mb4;
@@ -26,6 +26,7 @@ CREATE TABLE `admin`  (
   `name` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
   `password` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
   `role` tinyint(4) NOT NULL,
+  `phone` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
   `area_id` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
@@ -33,8 +34,11 @@ CREATE TABLE `admin`  (
 -- ----------------------------
 -- Records of admin
 -- ----------------------------
-INSERT INTO `admin` VALUES ('123456', '田东管理员1', 'e10adc3949ba59abbe56e057f20f883e', 0, '451022');
-INSERT INTO `admin` VALUES ('128970', '平果管理员1', 'e10adc3949ba59abbe56e057f20f883e', 0, '451023');
+INSERT INTO `admin` VALUES ('123456', '田东管理员1', '$2a$10$NgQXkIbSYMNFtpJ1hWazo.P3UeAk7.32t0b4elbKcjtruPiEP0A1i', 0, '15224637598', '451022');
+INSERT INTO `admin` VALUES ('128970', '平果管理员1', '$2a$10$NgQXkIbSYMNFtpJ1hWazo.P3UeAk7.32t0b4elbKcjtruPiEP0A1i', 0, '15224637577', '451023');
+INSERT INTO `admin` VALUES ('154635', '田阳管理员', '$2a$10$NgQXkIbSYMNFtpJ1hWazo.P3UeAk7.32t0b4elbKcjtruPiEP0A1i', 0, '15224635645', '451003');
+INSERT INTO `admin` VALUES ('659887', '田林管理员', '$2a$10$NgQXkIbSYMNFtpJ1hWazo.P3UeAk7.32t0b4elbKcjtruPiEP0A1i', 0, '15465568998', '451029');
+INSERT INTO `admin` VALUES ('cgy123456', '超级管理员', '$2a$10$NgQXkIbSYMNFtpJ1hWazo.P3UeAk7.32t0b4elbKcjtruPiEP0A1i', 2, NULL, '000000');
 
 -- ----------------------------
 -- Table structure for areas
@@ -3582,15 +3586,16 @@ CREATE TABLE `cold_chain_car`  (
 -- ----------------------------
 -- Records of cold_chain_car
 -- ----------------------------
-INSERT INTO `cold_chain_car` VALUES ('cc451022001', '6.8厢式货车1', 0, 0, 0, 8000, 0, 35, 2, '451022', '2025-01-12');
-INSERT INTO `cold_chain_car` VALUES ('cc451022002', '4.2厢式货车1', 0, 0, 0, 6000, 0, 13, 2, '451022', '2025-01-12');
+INSERT INTO `cold_chain_car` VALUES ('cc451022001', '6.8厢式货车1', -5, 99, 0, 8000, 0, 35, 2, '451022', '2025-01-12');
+INSERT INTO `cold_chain_car` VALUES ('cc451022002', '4.2厢式货车1', 0, 0, 0, 6000, 0, 13, 1, '451022', '2025-01-12');
 INSERT INTO `cold_chain_car` VALUES ('cc451022003', '4.2厢式货车3', 0, 0, 0, 4000, 0, 10, 1, '451022', '2025-01-12');
 INSERT INTO `cold_chain_car` VALUES ('cc451022004', '6.8大体积冷链货车', 0, 0, 0, 10000, 0, 20, 1, '451022', '2025-01-21');
 INSERT INTO `cold_chain_car` VALUES ('cc451022005', '微型冷链货车', 0, 0, 0, 2000, 0, 8, 1, '451022', '2025-01-21');
-INSERT INTO `cold_chain_car` VALUES ('cc451022006', '轻型冷链货车', 0, 0, 0, 5000, 0, 15, 2, '451022', '2025-01-21');
-INSERT INTO `cold_chain_car` VALUES ('cc451022007', '中型冷链货车', 0, 0, 0, 10000, 0, 30, 2, '451022', '2025-01-21');
+INSERT INTO `cold_chain_car` VALUES ('cc451022006', '轻型冷链货车', 0, 0, 0, 5000, 0, 15, 1, '451022', '2025-01-21');
+INSERT INTO `cold_chain_car` VALUES ('cc451022007', '中型冷链货车', 0, 0, 0, 10000, 0, 30, 1, '451022', '2025-01-21');
 INSERT INTO `cold_chain_car` VALUES ('cc451023001', '中型冷链车', 10, 90, 0, 8000, 0, 25, 2, '451023', '2025-02-03');
 INSERT INTO `cold_chain_car` VALUES ('cc451023002', '小型冷链车', 2, 100, 0, 8000, 0, 10, 2, '451023', '2025-02-03');
+INSERT INTO `cold_chain_car` VALUES ('cc451029001', '中型冷链车', 0, 0, 0, 8000, 0, 20, 2, '451029', '2025-02-20');
 
 -- ----------------------------
 -- Table structure for cold_chain_center
@@ -3610,6 +3615,7 @@ CREATE TABLE `cold_chain_center`  (
 INSERT INTO `cold_chain_center` VALUES ('ccc1001', '田东县冷链中心1', '451022', '锦江大道1号');
 INSERT INTO `cold_chain_center` VALUES ('ccc1002', '田东县冷链中心2', '451022', '盘古大道88号');
 INSERT INTO `cold_chain_center` VALUES ('ccc1003', '平果县冷链中心1', '451023', '水利江大道54好');
+INSERT INTO `cold_chain_center` VALUES ('ccc1004', '田林县冷链中心1', '451029', '田林县政府');
 
 -- ----------------------------
 -- Table structure for delivery
@@ -3634,10 +3640,11 @@ CREATE TABLE `delivery`  (
 -- ----------------------------
 INSERT INTO `delivery` VALUES ('de2f390724xf', '202155452', 'gsd1fd6f7axf', 2.5, 1500, '百城街道中山二路右江民族医学院', 'tc0361af71x8', 3, '2025-01-26 12:57:55', '2025-01-26 12:57:55');
 INSERT INTO `delivery` VALUES ('de3917695cx2', '202168484', 'gsd1fd6f7axf', 2.5, 1500, '百城街道中山路21号百色学院东合校区', 'tc0361af71x8', 4, '2025-01-25 22:01:33', '2025-01-28 13:31:14');
-INSERT INTO `delivery` VALUES ('de4e4e250fxe', '202154123', 'gscfd6f8ffxc', 0.5, 500, '出现一路541号', 'tc5584b639xf', 3, NULL, '2025-02-01 16:59:28');
+INSERT INTO `delivery` VALUES ('de422a62a4x1', '202111388', 'gs4fa4faf5xf', 1.5, 1500, '弄里存7号', 'tc79087295x4', 4, '2025-02-20 22:49:09', '2025-02-20 22:49:37');
+INSERT INTO `delivery` VALUES ('de4e4e250fxe', '202154123', 'gscfd6f8ffxc', 0.5, 500, '出现一路541号', 'tc5584b639xf', 4, '2025-01-26 23:24:46', '2025-02-12 21:06:23');
 INSERT INTO `delivery` VALUES ('de524d00e3x9', '654516865', 'gsaf834288x6', 2.5, 500, '邕江大道51号', 'tc17c9a223x4', 4, '2025-02-03 12:56:06', '2025-02-03 14:16:10');
 INSERT INTO `delivery` VALUES ('de59f5a739x7', '2020898989', 'gs8cfa08bfxd', 5, 1000, '新圩村55号', 'tcc5492862xc', 4, '2025-02-03 21:37:28', '2025-02-03 21:39:28');
-INSERT INTO `delivery` VALUES ('de6a2e02f4xb', '202111965', 'gscfd6f8ffxc', 0.5, 500, '民族大道55号', 'tc1738405ax4', 3, '2025-01-26 23:24:46', '2025-01-26 23:24:46');
+INSERT INTO `delivery` VALUES ('de6a2e02f4xb', '202111965', 'gscfd6f8ffxc', 0.5, 500, '民族大道55号', 'tc1738405ax4', 4, '2025-01-26 23:24:46', '2025-02-12 20:58:45');
 INSERT INTO `delivery` VALUES ('debe6003b7xd', '2020898989', 'gsaf834288x6', 7.5, 1500, '杰客网络传媒', 'tcc5492862xc', 4, '2025-02-04 12:24:35', '2025-02-04 12:25:10');
 INSERT INTO `delivery` VALUES ('dee771f50cx6', '2020898989', 'gsd1fsdfsaxf', 2, 500, '杰客网络传媒', 'tcc5492862xc', 4, '2025-02-04 12:24:35', '2025-02-04 12:25:11');
 
@@ -3661,14 +3668,15 @@ CREATE TABLE `driver`  (
 -- ----------------------------
 INSERT INTO `driver` VALUES ('sj451022001', '叶师傅', '18943428307', 1, 1, '451023', '2025-01-12');
 INSERT INTO `driver` VALUES ('sj451022002', '黄师傅', '16457851324', 1, 1, '451022', '2025-01-12');
-INSERT INTO `driver` VALUES ('sj451022004', '钟师傅', '19764541256', 0, 2, '451022', '2025-01-12');
+INSERT INTO `driver` VALUES ('sj451022004', '钟师傅', '19764541256', 0, 1, '451022', '2025-01-12');
 INSERT INTO `driver` VALUES ('sj451022005', '刘师傅', '15421335468', 1, 2, '451022', '2025-01-21');
 INSERT INTO `driver` VALUES ('sj451022006', '蒋师傅', '15224637878', 0, 1, '451022', '2025-01-22');
 INSERT INTO `driver` VALUES ('sj451022007', '郑师傅', '18445136487', 0, 1, '451022', '2025-01-22');
-INSERT INTO `driver` VALUES ('sj451022008', '秦师傅', '16452315486', 1, 2, '451022', '2025-01-22');
-INSERT INTO `driver` VALUES ('sj451022009', '邹师傅', '15423654521', 1, 2, '451022', '2025-01-22');
+INSERT INTO `driver` VALUES ('sj451022008', '秦师傅', '16452315486', 1, 1, '451022', '2025-01-22');
+INSERT INTO `driver` VALUES ('sj451022009', '邹师傅', '15423654521', 1, 1, '451022', '2025-01-22');
 INSERT INTO `driver` VALUES ('sj451023001', '龙五延', '18955462549', 1, 2, '451023', '2025-02-03');
 INSERT INTO `driver` VALUES ('sj451023002', '杨震南', '15856462635', 0, 2, '451023', '2025-02-03');
+INSERT INTO `driver` VALUES ('sj451029001', '张坤诩', '18945669856', 1, 2, '451029', '2025-02-20');
 
 -- ----------------------------
 -- Table structure for goods
@@ -3692,6 +3700,7 @@ CREATE TABLE `goods`  (
 -- Records of goods
 -- ----------------------------
 INSERT INTO `goods` VALUES ('gs36ff2c77x1', '萝卜', 4, 800, -4, 10, 8, 'https://copyright.bdstatic.com/vcg/creative/73256851d03d04806cbdae1da9e733ed.jpg', 4, '202111345');
+INSERT INTO `goods` VALUES ('gs4fa4faf5xf', '罗非鱼', 1.5, 1500, 1, 99, 14, 'https://baise212lz.oss-cn-chengdu.aliyuncs.com/logistics/2025/2/20/05888bf56d184b898b334187c86a4350.jpg', 4, '202111351');
 INSERT INTO `goods` VALUES ('gs79e2d546x5', '淡水虾', 5, 5000, -10, 2, 70, 'https://baise212lz.oss-cn-chengdu.aliyuncs.com/logistics/2025/1/25/6bb0b03aa811493192c816fcfaa48322.jpg', 1, '202168484');
 INSERT INTO `goods` VALUES ('gs7f64e201x0', '茄子2', 2, 500, -6, 12, 3, 'https://baise212lz.oss-cn-chengdu.aliyuncs.com/logistics/2025/1/15/326a465328ee4a39a44a4ed842661d4f.jpg', 1, '202111345');
 INSERT INTO `goods` VALUES ('gs81077e10x2', '甘甜荔枝最懂你！！', 6, 5400, -3, 10, 4.5, 'https://baise212lz.oss-cn-chengdu.aliyuncs.com/logistics/2025/1/22/752bdde736234d41aa0aee41ee2c377d.jpg', 4, '202154123');
@@ -3723,8 +3732,11 @@ CREATE TABLE `goods_cost`  (
 -- ----------------------------
 -- Records of goods_cost
 -- ----------------------------
+INSERT INTO `goods_cost` VALUES ('gc105ed95cx2', '202111965', '202111345', 'de6a2e02f4xb', 1750, 1, '2025-02-12 20:58:45');
 INSERT INTO `goods_cost` VALUES ('gc23cdec38xc', '654516865', '202114586', 'de524d00e3x9', 3750, 2, '2025-02-03 14:16:10');
 INSERT INTO `goods_cost` VALUES ('gc3591b8c2x8', '2020898989', '202114586', 'debe6003b7xd', 11250, 2, '2025-02-04 12:25:10');
+INSERT INTO `goods_cost` VALUES ('gc525deac6x7', '202111388', '202111351', 'de422a62a4x1', 21000, 2, '2025-02-20 22:49:37');
+INSERT INTO `goods_cost` VALUES ('gc558e3af7xe', '202154123', '202111345', 'de4e4e250fxe', 1750, 1, '2025-02-12 21:06:23');
 INSERT INTO `goods_cost` VALUES ('gca2a45583xf', '202168484', '202111389', 'de3917695cx2', 6750, 2, '2025-01-28 13:49:56');
 INSERT INTO `goods_cost` VALUES ('gcb1b310a7x2', '2020898989', '654516865', 'dee771f50cx6', 1500, 2, '2025-02-04 12:25:11');
 INSERT INTO `goods_cost` VALUES ('gcf8f2880bx2', '2020898989', '654516865', 'de59f5a739x7', 30000, 2, '2025-02-03 21:39:28');
@@ -3743,7 +3755,7 @@ CREATE TABLE `menu`  (
   `father` int(11) NULL DEFAULT NULL,
   `role` varchar(127) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 26 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 27 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of menu
@@ -3756,22 +3768,24 @@ INSERT INTO `menu` VALUES (5, 1, '用户管理', '/userManage', 'UserManage', 'U
 INSERT INTO `menu` VALUES (6, 1, '司机管理', '/driverManager', 'DriverManage', 'User', 0, '0');
 INSERT INTO `menu` VALUES (7, 1, '冷链车管理', '/coldChainCarManage', 'ColdChainCarManage', 'Magnet', 0, '0');
 INSERT INTO `menu` VALUES (8, 1, '修改密码', '/person/password', '/person/Password', NULL, 3, '0,1');
-INSERT INTO `menu` VALUES (9, 1, '我的商品', '/myGoodsManage', 'MyGoodsManage', 'Watermelon', 0, '1');
-INSERT INTO `menu` VALUES (10, 1, '冷藏室管理', '/refrigerateManage', 'RefrigerateManage', 'House', 0, '0');
-INSERT INTO `menu` VALUES (11, 1, '农产品管理', '/goodsAllManage', 'GoodsAllManage', 'Watermelon', 0, '0');
-INSERT INTO `menu` VALUES (12, 1, '我要运输', '/transportToHome', 'TransportToHome', 'Connection', 0, '1');
-INSERT INTO `menu` VALUES (13, 1, '运输总单', '/transportationTotal', 'TransportationTotal', 'Paperclip', 0, '0');
-INSERT INTO `menu` VALUES (14, 2, '运输管理', '/transportationDelivery', 'TransportationDelivery', 'CirclePlus', 0, '0');
-INSERT INTO `menu` VALUES (15, 1, '运输子单', '/transportationDelivery/transportationSub', '/transportationDelivery/TransportationSub', NULL, 14, '0');
-INSERT INTO `menu` VALUES (16, 1, '配送子单', '/transportationDelivery/deliveryManage', '/transportationDelivery/DeliveryManage', '', 14, '0');
-INSERT INTO `menu` VALUES (17, 1, '商品逛逛', '/shopping', 'Shopping', 'Goods', 0, '1');
-INSERT INTO `menu` VALUES (18, 1, '我的配送', '/myDelivery', 'MyDelivery', 'Paperclip', 0, '1');
-INSERT INTO `menu` VALUES (19, 2, '我的财务', '/myFinance', 'MyFinance', 'Money', 0, '1');
-INSERT INTO `menu` VALUES (20, 1, '我的支付', '/myFinance/myPay', '/myFinance/MyPay', '', 19, '1');
-INSERT INTO `menu` VALUES (21, 1, '冷链室费用', '/myFinance/roomCost', '/myFinance/RoomCost', '', 19, '1');
-INSERT INTO `menu` VALUES (22, 1, '我的收款', '/myFinance/MyIncome', '/myFinance/MyIncome', '', 19, '1');
-INSERT INTO `menu` VALUES (23, 1, '我的账户', '/myFinance/myAccount', '/myFinance/MyAccount', '', 19, '1');
-INSERT INTO `menu` VALUES (24, 1, '财务管理', '/financeManage', 'FinanceManage', 'CircleCheck', 0, '0');
+INSERT INTO `menu` VALUES (9, 1, '我的农产品', '/myGoodsManage', 'MyGoodsManage', 'Watermelon', 0, '1');
+INSERT INTO `menu` VALUES (10, 1, '冷藏中心管理', '/coldChainCenter', 'ColdChainCenterManage', 'Crop', 0, '0');
+INSERT INTO `menu` VALUES (11, 1, '冷藏室管理', '/refrigerateManage', 'RefrigerateManage', 'House', 0, '0');
+INSERT INTO `menu` VALUES (12, 1, '农产品管理', '/goodsAllManage', 'GoodsAllManage', 'Watermelon', 0, '0');
+INSERT INTO `menu` VALUES (13, 1, '我的运输', '/transportToHome', 'TransportToHome', 'Connection', 0, '1');
+INSERT INTO `menu` VALUES (14, 1, '运输配送单', '/transportationTotal', 'TransportationTotal', 'Paperclip', 0, '0');
+INSERT INTO `menu` VALUES (15, 2, '运输管理', '/transportationDelivery', 'TransportationDelivery', 'CirclePlus', 0, '0');
+INSERT INTO `menu` VALUES (16, 1, '运输子单', '/transportationDelivery/transportationSub', '/transportationDelivery/TransportationSub', NULL, 15, '0');
+INSERT INTO `menu` VALUES (17, 1, '配送子单', '/transportationDelivery/deliveryManage', '/transportationDelivery/DeliveryManage', '', 15, '0');
+INSERT INTO `menu` VALUES (18, 1, '商品逛逛', '/shopping', 'Shopping', 'Goods', 0, '1');
+INSERT INTO `menu` VALUES (19, 1, '我的配送', '/myDelivery', 'MyDelivery', 'Paperclip', 0, '1');
+INSERT INTO `menu` VALUES (20, 2, '我的财务', '/myFinance', 'MyFinance', 'Money', 0, '1');
+INSERT INTO `menu` VALUES (21, 1, '我的支付', '/myFinance/myPay', '/myFinance/MyPay', '', 20, '1');
+INSERT INTO `menu` VALUES (22, 1, '冷链室费用', '/myFinance/roomCost', '/myFinance/RoomCost', '', 20, '1');
+INSERT INTO `menu` VALUES (23, 1, '我的收款', '/myFinance/MyIncome', '/myFinance/MyIncome', '', 20, '1');
+INSERT INTO `menu` VALUES (24, 1, '我的账户', '/myFinance/myAccount', '/myFinance/MyAccount', '', 20, '1');
+INSERT INTO `menu` VALUES (25, 1, '财务管理', '/financeManage', 'FinanceManage', 'CircleCheck', 0, '0');
+INSERT INTO `menu` VALUES (26, 1, '管理员管理', '/adminManager', 'AdminManage', 'UserFilled', 0, '2');
 
 -- ----------------------------
 -- Table structure for money
@@ -3783,7 +3797,7 @@ CREATE TABLE `money`  (
   `car_num` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
   `balance` float NOT NULL DEFAULT 0,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 23 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 28 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of money
@@ -3797,11 +3811,16 @@ INSERT INTO `money` VALUES (6, '202111965', '6222356612412045571', 0);
 INSERT INTO `money` VALUES (7, '202154123', '6222356612412045571', 0);
 INSERT INTO `money` VALUES (8, '202155452', '6222356612412045571', 0);
 INSERT INTO `money` VALUES (9, '202168484', '6222356612412045571', 250);
-INSERT INTO `money` VALUES (10, '123456', '6222356612412045570', 700);
-INSERT INTO `money` VALUES (16, '128970', '6222356612412045570', 1275);
+INSERT INTO `money` VALUES (10, '123456', '6222356612412045570', 0);
+INSERT INTO `money` VALUES (16, '128970', '6222356612412045570', 0);
 INSERT INTO `money` VALUES (20, '202114586', '6546564656845', 10730);
 INSERT INTO `money` VALUES (21, '654516865', '6222355555895009330', 1500);
 INSERT INTO `money` VALUES (22, '2020898989', '', 0);
+INSERT INTO `money` VALUES (23, 'cgy123456', '', 0);
+INSERT INTO `money` VALUES (24, '202011689', '', 0);
+INSERT INTO `money` VALUES (25, '659887', '6222355555895009330', 0);
+INSERT INTO `money` VALUES (26, '202111351', '6222355555895009339', 20900);
+INSERT INTO `money` VALUES (27, '202111388', '', 0);
 
 -- ----------------------------
 -- Table structure for payment_record
@@ -3817,7 +3836,7 @@ CREATE TABLE `payment_record`  (
   `transaction_id` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
   `createTime` datetime(0) NOT NULL,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 26 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 32 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of payment_record
@@ -3835,6 +3854,11 @@ INSERT INTO `payment_record` VALUES (22, '654516865', '128970', 325, 1, 2, 'rcca
 INSERT INTO `payment_record` VALUES (23, '2020898989', '202114586', 11250, 1, 1, 'gc3591b8c2x8', '2025-02-04 12:27:35');
 INSERT INTO `payment_record` VALUES (24, '2020898989', '654516865', 1500, 1, 1, 'gcb1b310a7x2', '2025-02-04 12:27:44');
 INSERT INTO `payment_record` VALUES (25, '202114586', '128970', 520, 2, 2, 'rc3fdc3c4fxa', '2025-02-04 12:44:20');
+INSERT INTO `payment_record` VALUES (26, '128970', '128970', 1275, 2, 3, '', '2025-02-06 12:54:13');
+INSERT INTO `payment_record` VALUES (28, '123456', '123456', 700, 2, 3, '', '2025-02-12 22:15:06');
+INSERT INTO `payment_record` VALUES (29, '202111388', '202111351', 21000, 1, 1, 'gc525deac6x7', '2025-02-20 22:50:31');
+INSERT INTO `payment_record` VALUES (30, '202111351', '659887', 100, 2, 2, 'rc582ef882x4', '2025-02-20 22:52:08');
+INSERT INTO `payment_record` VALUES (31, '659887', '659887', 100, 2, 3, '', '2025-02-20 22:55:19');
 
 -- ----------------------------
 -- Table structure for provinces
@@ -3910,6 +3934,7 @@ INSERT INTO `refrigerate_room` VALUES ('rm1001', '冷链室1号', -3, 4, 9, 100,
 INSERT INTO `refrigerate_room` VALUES ('rm1002', '冷链室2号', -5, 6, 15, 100, 2, 'ccc1001', '2025-01-13');
 INSERT INTO `refrigerate_room` VALUES ('rm1003', '冷链室3号', -2, 7, 8, 120, 2, 'ccc1002', '2025-01-15');
 INSERT INTO `refrigerate_room` VALUES ('rm451023001', '冷链中心1冷链室1', 5, 90, 0, 120, 2, 'ccc1003', '2025-02-03');
+INSERT INTO `refrigerate_room` VALUES ('rm451029001', '冷链室1', -2, 99, 1.5, 80, 2, 'ccc1004', '2025-02-20');
 
 -- ----------------------------
 -- Table structure for room_cost
@@ -3929,7 +3954,10 @@ CREATE TABLE `room_cost`  (
 -- ----------------------------
 -- Records of room_cost
 -- ----------------------------
+INSERT INTO `room_cost` VALUES ('rc3ed7a1bex2', '202111345', 'de6a2e02f4xb', 4, 300, 1, '2025-02-12 20:58:45');
 INSERT INTO `room_cost` VALUES ('rc3fdc3c4fxa', '202114586', 'debe6003b7xd', 1, 520, 2, '2025-02-04 12:25:10');
+INSERT INTO `room_cost` VALUES ('rc4fa7c53fx8', '202111345', 'de4e4e250fxe', 4, 300, 1, '2025-02-12 21:06:23');
+INSERT INTO `room_cost` VALUES ('rc582ef882x4', '202111351', 'de422a62a4x1', 1, 100, 2, '2025-02-20 22:49:37');
 INSERT INTO `room_cost` VALUES ('rcad2626eax6', '202114586', 'de524d00e3x9', 1, 340, 2, '2025-02-03 14:16:10');
 INSERT INTO `room_cost` VALUES ('rcb6d282ddx5', '654516865', 'de59f5a739x7', 1, 430, 2, '2025-02-03 21:39:28');
 INSERT INTO `room_cost` VALUES ('rccacf8031x6', '654516865', 'dee771f50cx6', 1, 325, 2, '2025-02-04 12:25:11');
@@ -3946,13 +3974,14 @@ CREATE TABLE `room_cost_compute`  (
   `other` float NULL DEFAULT NULL,
   `area_id` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 3 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 4 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of room_cost_compute
 -- ----------------------------
 INSERT INTO `room_cost_compute` VALUES (1, 50, 50, 100, '451022');
 INSERT INTO `room_cost_compute` VALUES (2, 30, 30, 250, '451023');
+INSERT INTO `room_cost_compute` VALUES (3, 10, 10, 10, '451029');
 
 -- ----------------------------
 -- Table structure for room_goods
@@ -3965,7 +3994,7 @@ CREATE TABLE `room_goods`  (
   `status` tinyint(4) NULL DEFAULT NULL,
   `createTime` datetime(0) NOT NULL,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 17 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 18 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of room_goods
@@ -3981,6 +4010,7 @@ INSERT INTO `room_goods` VALUES (13, 'rm1002', 'gsd1fd6f7axf', 2, '2025-01-23 00
 INSERT INTO `room_goods` VALUES (14, 'rm451023001', 'gsaf834288x6', 2, '2025-02-03 12:49:06');
 INSERT INTO `room_goods` VALUES (15, 'rm451023001', 'gs8cfa08bfxd', 2, '2025-02-03 21:12:25');
 INSERT INTO `room_goods` VALUES (16, 'rm451023001', 'gsd1fsdfsaxf', 2, '2025-02-04 12:21:05');
+INSERT INTO `room_goods` VALUES (17, 'rm451029001', 'gs4fa4faf5xf', 1, '2025-02-20 22:43:54');
 
 -- ----------------------------
 -- Table structure for transportation
@@ -4004,6 +4034,7 @@ INSERT INTO `transportation` VALUES ('ts0630f1a0xa', '202168484', 'gs79e2d546x5'
 INSERT INTO `transportation` VALUES ('ts09220ccex1', '202111389', 'gsbf97e8bfxd', '龙蟠九路32号福苑小区', 3, '2025-01-23 15:43:43', 'tc1738405ax4');
 INSERT INTO `transportation` VALUES ('ts0f0abdfbx2', '654516865', 'gs8cfa08bfxd', '那头村45号', 3, '2025-02-03 21:12:25', 'tcc233dfa2x5');
 INSERT INTO `transportation` VALUES ('ts1001dfaadfa', '202111389', 'gsd1fd6f7axf', '光明路2号', 3, '2025-01-23 17:30:51', 'tc1651asfas');
+INSERT INTO `transportation` VALUES ('ts1aaf72baxf', '202111351', 'gs4fa4faf5xf', '弄头村1号', 3, '2025-02-20 22:43:54', 'tc79087295x4');
 INSERT INTO `transportation` VALUES ('ts2be6c99ax7', '202154123', 'gs81077e10x2', '锦绣大道45号', 3, '2025-01-23 17:14:42', 'tc0361af71x8');
 INSERT INTO `transportation` VALUES ('ts6dc579e9x0', '202114586', 'gsaf834288x6', '平新路和蔼村108号', 3, '2025-02-03 12:49:06', 'tc17c9a223x4');
 INSERT INTO `transportation` VALUES ('ts8cf6bb33x7', '202111345', 'gs9832bd99x5', '桂阳龙井大道21号', 3, '2025-01-25 12:41:59', 'tc5584b639xf');
@@ -4029,9 +4060,7 @@ CREATE TABLE `ts_car`  (
 -- Records of ts_car
 -- ----------------------------
 INSERT INTO `ts_car` VALUES ('tc0361af71x8', 'sj451022005', 'cc451022001', '451022', 1, '2025-01-26 17:38:16');
-INSERT INTO `ts_car` VALUES ('tc1651asfas', 'sj451022004', 'cc451022002', '451022', 1, '2025-01-23 17:30:51');
-INSERT INTO `ts_car` VALUES ('tc1738405ax4', 'sj451022009', 'cc451022007', '451022', 1, '2025-01-26 17:49:01');
-INSERT INTO `ts_car` VALUES ('tc5584b639xf', 'sj451022008', 'cc451022006', '451022', 1, '2025-02-01 16:59:28');
+INSERT INTO `ts_car` VALUES ('tc79087295x4', 'sj451029001', 'cc451029001', '451029', 1, '2025-02-20 22:49:30');
 INSERT INTO `ts_car` VALUES ('tcc233dfa2x5', 'sj451023001', 'cc451023001', '451023', 1, '2025-02-03 21:12:25');
 INSERT INTO `ts_car` VALUES ('tcc5492862xc', 'sj451023002', 'cc451023002', '451023', 1, '2025-02-04 12:25:04');
 
@@ -4057,17 +4086,22 @@ CREATE TABLE `user`  (
 -- ----------------------------
 INSERT INTO `user` VALUES ('123456', '平台', 'dkghsdikufhasdasjgdakjfgadyfgajs', NULL, NULL, NULL, 1, NULL, NULL);
 INSERT INTO `user` VALUES ('128970', '平台', '98646d41a9764', NULL, NULL, NULL, 1, NULL, '2025-02-02');
-INSERT INTO `user` VALUES ('2020898989', '杨梦晗', 'e10adc3949ba59abbe56e057f20f883e', '15224669874', 'https://baise212lz.oss-cn-chengdu.aliyuncs.com/logistics/2025/2/3/ff41b081fbff4aa0a95e9603628621b0.jpg', 1, 1, '451023', '2025-02-03');
-INSERT INTO `user` VALUES ('202111345', '章雅瑜', 'e10adc3949ba59abbe56e057f20f883e', '15224669874', 'https://baise212lz.oss-cn-chengdu.aliyuncs.com/logistics/2025/1/16/010b4db6cd124551be4191b77a3b4f16.jpg', 1, 1, '451022', '2025-01-08');
-INSERT INTO `user` VALUES ('202111389', '张三丰', 'e10adc3949ba59abbe56e057f20f883e', '21542461245', 'https://baise212lz.oss-cn-chengdu.aliyuncs.com/logistics/2025/1/11/7fd132b33e904f448c8ef6bf6a9de0b1.jpg', 1, 1, '451022', '2025-01-08');
-INSERT INTO `user` VALUES ('202111478', '张珊珊', 'e10adc3949ba59abbe56e057f20f883e', '15224637798', 'https://baise212lz.oss-cn-chengdu.aliyuncs.com/logistics/2025/1/11/ac846ab4a3c14fe798394d29c4a9f249.jpg', 0, 1, '451022', '2025-01-08');
-INSERT INTO `user` VALUES ('202111654', '李郁郁', 'e10adc3949ba59abbe56e057f20f883e', '15224637798', 'https://baise212lz.oss-cn-chengdu.aliyuncs.com/logistics/2025/1/11/e5f1e6d88aba42a98f4870992f31d80c.jpg', 0, 1, '451022', '2025-01-08');
-INSERT INTO `user` VALUES ('202111856', '张子瑜', 'c33367701511b4f6020ec61ded352059', '15246634589', 'https://baise212lz.oss-cn-chengdu.aliyuncs.com/logistics/2025/1/11/292c5a3dbe414c86b1db05fc666adea2.jpg', 0, 1, '451022', '2025-01-10');
-INSERT INTO `user` VALUES ('202111965', '胡以来', 'e10adc3949ba59abbe56e057f20f883e', '19177216449', 'https://baise212lz.oss-cn-chengdu.aliyuncs.com/logistics/2025/1/15/8b27e3d40f4a466187b9c13984d2c637.jpg', 1, 1, '451022', '2025-01-10');
-INSERT INTO `user` VALUES ('202114586', '宋基尼', 'e10adc3949ba59abbe56e057f20f883e', '15885456895', 'https://baise212lz.oss-cn-chengdu.aliyuncs.com/logistics/2025/2/3/2de6c4bdab4046d3bcd8d5cd7a9d34db.jpg', 0, 1, '451023', '2025-02-02');
-INSERT INTO `user` VALUES ('202154123', '樊实战', 'e10adc3949ba59abbe56e057f20f883e', '15224637798', 'https://baise212lz.oss-cn-chengdu.aliyuncs.com/logistics/2025/1/22/93039ad1bf4d432da888ab65c111a84a.jpg', 1, 1, '451022', '2025-01-08');
-INSERT INTO `user` VALUES ('202155452', '帮一帮', 'e10adc3949ba59abbe56e057f20f883e', '15224637798', 'https://baise212lz.oss-cn-chengdu.aliyuncs.com/logistics/2025/1/15/d50691c66d244a19a427ece0e12ba5b2.jpeg', 0, 1, '451022', '2025-01-08');
-INSERT INTO `user` VALUES ('202168484', '梁海胆', 'e10adc3949ba59abbe56e057f20f883e', '15224637798', 'https://baise212lz.oss-cn-chengdu.aliyuncs.com/logistics/2025/1/15/84fb3e42113145a9b1965b4f6bc46c74.jpg', 1, 1, '451022', '2025-01-08');
-INSERT INTO `user` VALUES ('654516865', '韦雅静', 'c33367701511b4f6020ec61ded352059', '15224637798', 'https://baise212lz.oss-cn-chengdu.aliyuncs.com/logistics/2025/1/15/443386b743e24aabb6569d7a1406f4ca.jpg', 0, 1, '451023', '2025-01-08');
+INSERT INTO `user` VALUES ('202011689', '郭靖', '$2a$10$NgQXkIbSYMNFtpJ1hWazo.P3UeAk7.32t0b4elbKcjtruPiEP0A1i', '15224635564', 'https://baise212lz.oss-cn-chengdu.aliyuncs.com/logistics/2025/2/14/5e27ecd572e443fca25fa0e4b2f657e6.jpg', 1, 1, '451022', '2025-02-14');
+INSERT INTO `user` VALUES ('2020898989', '杨梦晗', '$2a$10$NgQXkIbSYMNFtpJ1hWazo.P3UeAk7.32t0b4elbKcjtruPiEP0A1i', '15224669874', 'https://baise212lz.oss-cn-chengdu.aliyuncs.com/logistics/2025/2/3/ff41b081fbff4aa0a95e9603628621b0.jpg', 1, 1, '451023', '2025-02-03');
+INSERT INTO `user` VALUES ('202111345', '章雅瑜', '$2a$10$NgQXkIbSYMNFtpJ1hWazo.P3UeAk7.32t0b4elbKcjtruPiEP0A1i', '15224669874', 'https://baise212lz.oss-cn-chengdu.aliyuncs.com/logistics/2025/1/16/010b4db6cd124551be4191b77a3b4f16.jpg', 1, 1, '451022', '2025-01-08');
+INSERT INTO `user` VALUES ('202111351', '林靖辰', '$2a$10$FRNekS8T8dts7eYiNz1xTOt.FHc5iKdOI186XUcRgM9hcpIUPNQpm', '18378859864', 'https://baise212lz.oss-cn-chengdu.aliyuncs.com/logistics/2025/2/20/25fe9f815fb84472b05477d9e48ebfae.jpg', 1, 1, '451029', '2025-02-20');
+INSERT INTO `user` VALUES ('202111388', '夏思柠', '$2a$10$vMCS5kyHv8ZkhSSTWbFm.uaO2G8u77ksmUO1p3F7YblHMbZ39TSeW', '18954632564', 'https://baise212lz.oss-cn-chengdu.aliyuncs.com/logistics/2025/2/20/070682efa6764fa493bd92abf139e17a.jpg', 0, 1, '451029', '2025-02-20');
+INSERT INTO `user` VALUES ('202111389', '张三丰', '$2a$10$NgQXkIbSYMNFtpJ1hWazo.P3UeAk7.32t0b4elbKcjtruPiEP0A1i', '21542461245', 'https://baise212lz.oss-cn-chengdu.aliyuncs.com/logistics/2025/1/11/7fd132b33e904f448c8ef6bf6a9de0b1.jpg', 1, 1, '451022', '2025-01-08');
+INSERT INTO `user` VALUES ('202111478', '张珊珊', '$2a$10$NgQXkIbSYMNFtpJ1hWazo.P3UeAk7.32t0b4elbKcjtruPiEP0A1i', '15224637798', 'https://baise212lz.oss-cn-chengdu.aliyuncs.com/logistics/2025/1/11/ac846ab4a3c14fe798394d29c4a9f249.jpg', 0, 1, '451022', '2025-01-08');
+INSERT INTO `user` VALUES ('202111654', '李郁郁', '$2a$10$NgQXkIbSYMNFtpJ1hWazo.P3UeAk7.32t0b4elbKcjtruPiEP0A1i', '15224637798', 'https://baise212lz.oss-cn-chengdu.aliyuncs.com/logistics/2025/1/11/e5f1e6d88aba42a98f4870992f31d80c.jpg', 0, 1, '451022', '2025-01-08');
+INSERT INTO `user` VALUES ('202111856', '张子瑜', '$2a$10$NgQXkIbSYMNFtpJ1hWazo.P3UeAk7.32t0b4elbKcjtruPiEP0A1i', '15246634589', 'https://baise212lz.oss-cn-chengdu.aliyuncs.com/logistics/2025/1/11/292c5a3dbe414c86b1db05fc666adea2.jpg', 0, 1, '451022', '2025-01-10');
+INSERT INTO `user` VALUES ('202111965', '胡以来', '$2a$10$NgQXkIbSYMNFtpJ1hWazo.P3UeAk7.32t0b4elbKcjtruPiEP0A1i', '19177216449', 'https://baise212lz.oss-cn-chengdu.aliyuncs.com/logistics/2025/1/15/8b27e3d40f4a466187b9c13984d2c637.jpg', 1, 1, '451022', '2025-01-10');
+INSERT INTO `user` VALUES ('202114586', '宋基尼', '$2a$10$NgQXkIbSYMNFtpJ1hWazo.P3UeAk7.32t0b4elbKcjtruPiEP0A1i', '15885456895', 'https://baise212lz.oss-cn-chengdu.aliyuncs.com/logistics/2025/2/3/2de6c4bdab4046d3bcd8d5cd7a9d34db.jpg', 0, 1, '451023', '2025-02-02');
+INSERT INTO `user` VALUES ('202154123', '樊实战', '$2a$10$NgQXkIbSYMNFtpJ1hWazo.P3UeAk7.32t0b4elbKcjtruPiEP0A1i', '15224637798', 'https://baise212lz.oss-cn-chengdu.aliyuncs.com/logistics/2025/1/22/93039ad1bf4d432da888ab65c111a84a.jpg', 1, 1, '451022', '2025-01-08');
+INSERT INTO `user` VALUES ('202155452', '帮一帮', '$2a$10$NgQXkIbSYMNFtpJ1hWazo.P3UeAk7.32t0b4elbKcjtruPiEP0A1i', '15224637798', 'https://baise212lz.oss-cn-chengdu.aliyuncs.com/logistics/2025/1/15/d50691c66d244a19a427ece0e12ba5b2.jpeg', 0, 1, '451022', '2025-01-08');
+INSERT INTO `user` VALUES ('202168484', '梁海胆', '$2a$10$NgQXkIbSYMNFtpJ1hWazo.P3UeAk7.32t0b4elbKcjtruPiEP0A1i', '15224637798', 'https://baise212lz.oss-cn-chengdu.aliyuncs.com/logistics/2025/1/15/84fb3e42113145a9b1965b4f6bc46c74.jpg', 1, 1, '451022', '2025-01-08');
+INSERT INTO `user` VALUES ('654516865', '韦雅静', '$2a$10$NgQXkIbSYMNFtpJ1hWazo.P3UeAk7.32t0b4elbKcjtruPiEP0A1i', '15224637798', 'https://baise212lz.oss-cn-chengdu.aliyuncs.com/logistics/2025/1/15/443386b743e24aabb6569d7a1406f4ca.jpg', 0, 1, '451023', '2025-01-08');
+INSERT INTO `user` VALUES ('659887', '平台', '57a82ae0d7104', NULL, NULL, NULL, 1, NULL, '2025-02-20');
+INSERT INTO `user` VALUES ('cgy123456', '平台', '7d9544ab327e4', NULL, NULL, NULL, 1, NULL, '2025-02-06');
 
 SET FOREIGN_KEY_CHECKS = 1;

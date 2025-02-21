@@ -8,6 +8,7 @@ import com.logistics.server.UserServer;
 import com.logistics.utils.ThreadLocalUtils;
 import io.netty.util.internal.StringUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,6 +21,7 @@ public class UserController {
     private UserServer userServer;
 
     @GetMapping("/list")
+    @PreAuthorize("@ex.verificationHandler(0)")
     public Result getUserByAreaId(Integer pageNum,Integer pageSize,String name,String id){
         if(pageNum==null){
             pageNum=1;
@@ -34,6 +36,7 @@ public class UserController {
     }
 
     @PostMapping
+    @PreAuthorize("@ex.verificationHandler(0)")
     public Result add( @Validated(Account.Add.class) User user){
         //System.out.println("user==="+user);
         userServer.addUser(user);
@@ -48,6 +51,7 @@ public class UserController {
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("@ex.verificationHandler(0)")
     public Result delete(@PathVariable String id){
         userServer.delete(id);
         return Result.success();

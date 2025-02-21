@@ -29,4 +29,6 @@ public interface TransportationMapper {
     List<Transportation> selectTransportationByTsCarId(String id);
 
     List<Transportation> selectTransportationListByTsCarId(String tsCarId);
+
+    List<Transportation> selectTransportationListByUserId(String id,String userId,String goodsId,Integer status,String carDriId);
 }

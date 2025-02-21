@@ -11,4 +11,6 @@ public interface PaymentRecordMapper {
     void insertPaymentRecord(PaymentRecord paymentRecord);
 
     List<PaymentRecord> selectPaymentList(String userName, Integer transaction, String transactionId, String id);
+
+    List<PaymentRecord> selectPaymentListOfWithdraw(Integer transaction, String id);
 }

@@ -107,8 +107,12 @@ const deleteButton = async (row) => {
 const detailTsCar = async (carDriId) => {
     if (carDriId) {
         const result = await detailServer(carDriId);
-        tsCarModel.value = result.data
-        visibleDrawerTsCarDetail.value = true;
+        if (result.data) {
+            tsCarModel.value = result.data
+            visibleDrawerTsCarDetail.value = true;
+        }else{
+            ElMessage.error("该运输配送单已不存在");
+        }
     } else {
         console.log("没有啊");
     }

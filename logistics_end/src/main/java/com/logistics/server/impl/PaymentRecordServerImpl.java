@@ -80,6 +80,20 @@ public class PaymentRecordServerImpl implements PaymentRecordServer {
 
         List<PaymentRecord> paymentRecordList= paymentRecordMapper.selectPaymentList(userName, transaction, transactionId,id);
 
+        return getPaymentRecordPageBean(paymentRecordList);
+    }
+
+    @Override
+    public PageBean<PaymentRecord> getPaymentRecordOfWithdrew(Integer pageNum, Integer pageSize) {
+        PageHelper.startPage(pageNum, pageSize);
+        String id =(String)((HashMap<String, Object>) ThreadLocalUtils.get()).get("id");
+        Integer transaction=3;
+        List<PaymentRecord> paymentRecordList= paymentRecordMapper.selectPaymentListOfWithdraw( transaction,id);
+
+        return getPaymentRecordPageBean(paymentRecordList);
+    }
+
+    public PageBean<PaymentRecord> getPaymentRecordPageBean(List<PaymentRecord> paymentRecordList){
         Page<PaymentRecord> page = (Page<PaymentRecord>) paymentRecordList;
         PageBean<PaymentRecord> paymentRecordPageBean = new PageBean<>();
         paymentRecordPageBean.setItems(page.getResult());

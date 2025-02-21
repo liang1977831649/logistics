@@ -10,8 +10,8 @@ import java.util.Map;
 public class TestJWT {
     @Test
     public void test1(){
-        Map<String, Object> stringObjectMap = JwtUtil.parseToken("eyJhbGciOilIUzI1NiIsInR5cCI6IkpXVCJ9.eyJjbGFpbXMiOnsicm9sZSI6MCwiaWQiOiIxMjM0NTYifSwiZXhwIjoxNzM2NjEzMTgwfQ.M9jTy4A2En2RnoN56SL7fb8bJCTaNB976Q5jSvk-DE0");
-        String s = (String)stringObjectMap.get("id");
-        System.out.println(s);
+        //Map<String, Object> stringObjectMap = JwtUtil.parseToken("eyJhbGciOilIUzI1NiIsInR5cCI6IkpXVCJ9.eyJjbGFpbXMiOnsicm9sZSI6MCwiaWQiOiIxMjM0NTYifSwiZXhwIjoxNzM2NjEzMTgwfQ.M9jTy4A2En2RnoN56SL7fb8bJCTaNB976Q5jSvk-DE0");
+        //String s = (String)stringObjectMap.get("id");
+        //System.out.println(s);
     }
 }

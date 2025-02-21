@@ -3,14 +3,13 @@ package com.logistics.server.impl;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.logistics.entity.*;
-import com.logistics.mapper.AreaMapper;
-import com.logistics.mapper.UserMapper;
-import com.logistics.mapper.WebMapper;
+import com.logistics.mapper.*;
 import com.logistics.server.UserServer;
-import com.logistics.utils.Md5Util;
 import com.logistics.utils.ThreadLocalUtils;
 import io.netty.util.internal.StringUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
@@ -24,6 +23,19 @@ public class UserServerImpl implements UserServer {
     private AreaMapper areaMapper;
     @Autowired
     private WebMapper webMapper;
+    @Autowired
+    private RoomCostMapper roomCostMapper;
+    @Autowired
+    private GoodsCostMapper goodsCostMapper;
+    @Autowired
+    private MoneyMapper moneyMapper;
+    @Autowired
+    private DeliveryMapper deliveryMapper;
+    @Autowired
+    private TransportationMapper transportationMapper;
+
+    @Autowired
+    private PasswordEncoder bCryptPasswordEncoder;
 
     @Override
     public void insertUserForRegister(Account account) {
@@ -40,18 +52,10 @@ public class UserServerImpl implements UserServer {
         user.setArea(account.getArea());
         user.setAreaId(account.getAreaId());
 
-        user.setPassword(Md5Util.getMD5String(user.getPassword()));//设置密码
+        user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));//设置密码
 
         user.setRole(1);//设置role
         user.setName("HelloWorld");
-
-        /* String areaCode = areaMapper.getAreaCodeByName(user.getArea());//获取到地区的代码
-        user.setAreaId(areaCode);//设置地区id */
-
-
-        //ColdChainCenter coldChainCenterByAreaId = coldChainCenterMapper.getColdChainCenterByAreaId(user.getAreaId());//尝试获取县级冷链中心
-        //设置地区代码
-        //user.setCccId(coldChainCenterByAreaId==null?"0":coldChainCenterByAreaId.getId());
 
         userMapper.insertUserFroRegister(user);//插入
     }
@@ -87,15 +91,15 @@ public class UserServerImpl implements UserServer {
         }
         //设置一些字段
         user.setRole(1);
-        if(user.getPhone()==null){
+        if (user.getPhone() == null) {
             user.setPhone("");
         }
-        if(user.getUserPic()==null){
+        if (user.getUserPic() == null) {
             user.setUserPic("");
         }
-        String areaId = (String)((HashMap<String, Object>) ThreadLocalUtils.get()).get("areaId");
+        String areaId = (String) ((HashMap<String, Object>) ThreadLocalUtils.get()).get("areaId");
         user.setAreaId(areaId);
-        user.setPassword(Md5Util.getMD5String(user.getPassword()));
+        user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
         userMapper.insertUserForAdd(user);
     }
 
@@ -105,11 +109,11 @@ public class UserServerImpl implements UserServer {
         Account account = new Account();
         account.setId(user.getId());
         User userById = webMapper.getUserById(account);
-        if(userById==null){
-            throw  new RuntimeException("该账户不存在");
+        if (userById == null) {
+            throw new RuntimeException("该账户不存在");
         }
-        if(!StringUtil.isNullOrEmpty(user.getPassword())){
-            user.setPassword(Md5Util.getMD5String(user.getPassword()));
+        if (!StringUtil.isNullOrEmpty(user.getPassword())) {
+            user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
         }
         userMapper.update(user);
     }
@@ -121,6 +125,37 @@ public class UserServerImpl implements UserServer {
 
     @Override
     public void delete(String id) {
+        //判断是否有未支付或未收款的订单
+        List<GoodsCost> goodsCostsType1 = goodsCostMapper.selectGoodsCostListByUserId("", null, null, 1, id, 1);
+        List<GoodsCost> goodsCostsType2 = goodsCostMapper.selectGoodsCostListByUserId("", null, null, 1, id, 2);
+        if (!goodsCostsType1.isEmpty()) {
+            throw new RuntimeException("存在未支付订单,不可删除");
+        }
+        if (!goodsCostsType2.isEmpty()) {
+            throw new RuntimeException("存在未收款订单，不可删除");
+        }
+        List<RoomCost> roomCostList = roomCostMapper.selectRoomCostList(id, null, 1, null);
+        if(!roomCostList.isEmpty()){
+            throw new RuntimeException("存在未支付的冷链室使用费，不可删除");
+        }
+        Money money = moneyMapper.selectMoneyByUserId(id);
+        if(money!=null){
+            if(money.getBalance()>0){
+                throw new RuntimeException("账户余额不为空，不可删除");
+            }
+        }
+
+        //如果存在运输子单或配送子单，并且是未有到最终状态的也不能删除
+        List<Transportation> transportationListStatusIsOne = transportationMapper.selectTransportationListByUserId(null,id,null,1,null);
+        List<Transportation>  transportationListStatusIsTwo=transportationMapper.selectTransportationListByUserId(null,id,null,2,null);
+        if(!transportationListStatusIsOne.isEmpty()||!transportationListStatusIsTwo.isEmpty()){
+            throw new RuntimeException("该用户存在运输子单，不可删除");
+        }
+
+        List<Delivery> deliveryList = deliveryMapper.selectDeliveryByUserId(null, id, null, 4, null);
+        if(!deliveryList.isEmpty()){
+            throw new RuntimeException("该用户存在配送子单，不可删除");
+        }
         userMapper.deleteUserById(id);
     }
 
@@ -133,12 +168,11 @@ public class UserServerImpl implements UserServer {
         if (user == null) {
             throw new RuntimeException("该账号不存在");
         }
-        //加密原密码
-        oldPwd = Md5Util.getMD5String(oldPwd);
-        if (!oldPwd.equals(user.getPassword())) {
+        //校验密码
+        if (!bCryptPasswordEncoder.matches(oldPwd,user.getPassword())) {
             throw new RuntimeException("原密码错误");
         }
-        newPwd = Md5Util.getMD5String(newPwd);
+        newPwd =bCryptPasswordEncoder.encode(newPwd);
         userMapper.updateUserPassword(newPwd, id);
     }
 

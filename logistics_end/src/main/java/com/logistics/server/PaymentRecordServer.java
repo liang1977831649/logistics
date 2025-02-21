@@ -9,4 +9,6 @@ public interface PaymentRecordServer {
     void addPaymentServer(PaymentRecord paymentRecord);
 
     PageBean<PaymentRecord> getPaymentRecord(Integer pageNum, Integer pageSize, String userName, Integer transaction, String transactionId);
+
+    PageBean<PaymentRecord> getPaymentRecordOfWithdrew(Integer pageNum, Integer pageSize);
 }

@@ -6,6 +6,7 @@ import com.logistics.entity.Result;
 import com.logistics.server.ColdChainCarServer;
 import com.logistics.utils.ThreadLocalUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,6 +19,7 @@ public class ColdChainCarController {
     private ColdChainCarServer coldChainCarServer;
 
     @GetMapping("/list")
+    @PreAuthorize("@ex.verificationHandler(0)")
     public Result getColdChainCarByAreaId(Integer pageNum, Integer pageSize, String name, String id, Integer status){
         if(pageNum==null){
             pageNum=1;
@@ -31,16 +33,19 @@ public class ColdChainCarController {
         return Result.success(driverPageBean);
     }
     @PutMapping
+    @PreAuthorize("@ex.verificationHandler(0)")
     public Result update(@RequestBody @Validated ColdChainCar coldChainCar){
         coldChainCarServer.updateColdChainCar(coldChainCar);
         return Result.success();
     }
     @PostMapping
+    @PreAuthorize("@ex.verificationHandler(0)")
     public Result add(@RequestBody @Validated(ColdChainCar.Add.class) ColdChainCar coldChainCar){
         coldChainCarServer.addColdChainCar(coldChainCar);
         return Result.success();
     }
     @DeleteMapping("/{id}")
+    @PreAuthorize("@ex.verificationHandler(0)")
     public Result del(@PathVariable String id){
         coldChainCarServer.deleteColdChainCarById(id);
         return Result.success();

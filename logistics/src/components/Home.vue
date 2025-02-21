@@ -50,7 +50,7 @@ const loadingRoutes=(itemList, index) => {
 const loadingUserInfo=async()=>{
   const result=await loadingUserInfoServer();
   userInfoServer().setUser(result.data);
-  console.log(result);
+  console.log("user=",result);
   loadingLocation(result.data.areaId)//加载个人地理位置信息，存储到pinia
 }
 loadingUserInfo();

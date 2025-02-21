@@ -24,4 +24,7 @@
             </if>
         </where>
     </select>
+    <select id="selectPaymentListOfWithdraw" resultType="com.logistics.entity.PaymentRecord">
+        select * from payment_record where pay_id=#{id} and collect_id=#{id} and transaction=#{transaction}
+    </select>
 </mapper>

@@ -63,13 +63,6 @@ const handleCurrentChange = async (number) => {
     await search()
 }
 search();
-
-const add = () => {
-    cleanModel();
-    title.value = '新增';
-    editFlag.value = true;
-    dialogVisible.value = true;
-}
 const editButton = (row) => {
     if (row.status != 1) {
         // ElMessage.error("农产品状态不在空闲状态中，不能修改")
@@ -94,15 +87,7 @@ const cleanModel = () => {
 const editAndAdd = () => {
     form.value.validate(async valid => {
         if (valid) {
-            if (title.value == '新增') {
-                goodsModel.value.userId = userInfoServer().userInfo.id
-                console.log("goodsModel.value=", goodsModel.value);
-                await addServer(goodsModel)
-                ElMessage.success("新增成功!")
-                dialogVisible.value = false;
-                cleanModel();
-                search()
-            } else {
+            if(title.value=='编辑') {
                 goodsModel.value.userId = userInfoServer().userInfo.id
                 await updateServer(goodsModel);
                 ElMessage.success("修改成功");
@@ -176,9 +161,6 @@ const detailRefrigerate = async (row) => {
                         :prefix-icon="Search" />
                     <el-button type="primary" style="margin-left: 10px;" @click="search()">搜索</el-button>
                     <el-button type="info" @click="reset()">重置</el-button>
-                </div>
-                <div>
-                    <el-button type="primary" style="margin: 10px 0 10px 0;" @click="add()">新增</el-button>
                 </div>
             </template>
             <div>

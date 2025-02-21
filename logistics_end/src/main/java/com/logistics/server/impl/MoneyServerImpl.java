@@ -3,10 +3,10 @@ package com.logistics.server.impl;
 import com.logistics.entity.*;
 import com.logistics.mapper.*;
 import com.logistics.server.MoneyServer;
-import com.logistics.utils.Md5Util;
 import com.logistics.utils.ThreadLocalUtils;
 import io.netty.util.internal.StringUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,7 +24,8 @@ public class MoneyServerImpl implements MoneyServer {
     private UserMapper userMapper;
     @Autowired
     private PaymentRecordMapper paymentRecordMapper;
-
+    @Autowired
+    private PasswordEncoder bCryptPasswordEncoder;
     @Override
     public Money getMoneyByUserId() {
         String id = (String) ((HashMap<String, Object>) ThreadLocalUtils.get()).get("id");
@@ -42,8 +43,7 @@ public class MoneyServerImpl implements MoneyServer {
         } else {
             accountById = webMapper.getUserById(account);
         }
-        account.setPassword(Md5Util.getMD5String(account.getPassword()));
-        if (!accountById.getPassword().equals(account.getPassword())) {
+        if(!bCryptPasswordEncoder.matches(account.getPassword(),accountById.getPassword())){
             throw new RuntimeException("密码错误");
         }
     }

@@ -10,6 +10,9 @@ import java.util.List;
 public interface RefrigerateMapper {
     List<Refrigerate> selectRefrigerateByAreaId(String areaId, String name, String id, Integer status);
 
+    List<Refrigerate> selectRefrigerateByCccId(String cccId);
+
+
     Refrigerate selectRefrigerateById(String id);
 
     Refrigerate selectRefrigerateByGoodsId(String goodsId);

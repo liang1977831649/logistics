@@ -87,6 +87,7 @@ const changeGoodsCostPriceWindows = async (row) => {
     goodsCostModel.value = {};
     goodsCostModel.value.id = row.id;
     goodsCostModel.value.cost = row.cost;
+    goodsCostModel.value.salesId=row.salesId;
     dialogVisibleOfUpdateGoodsCostPrice.value = true;
 }
 const confirmGoodsCostPrice = async () => {

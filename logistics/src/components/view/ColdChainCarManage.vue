@@ -99,6 +99,10 @@ const add = () => {
     dialogVisible.value = true;
 }
 const editButton = (row) => {
+    if(row.status!=1){
+        ElMessage.error('该车辆状态不是空闲，不可修改')
+        return ;
+    }
     coldChainCarModel.value = JSON.parse(JSON.stringify(row));
     loadingAreaModel();
     coldChainCarModel.value.status = coldChainCarModel.value.status + ""

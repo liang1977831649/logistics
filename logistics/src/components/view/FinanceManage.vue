@@ -9,7 +9,8 @@ import { detailUserServer } from "@/api/userApi"
 import { showRoomCostCompute, updateRoomCostCompute } from "@/api/roomCostComputeApi"
 import { updateRoomCostServer } from "@/api/roomCost"
 import { ElMessage, ElNotification, ElMessageBox } from "element-plus"
-import { getMoneyServer, updateMoneyServer, passwordValidServer,withdrawMoney } from "@/api/moneyApi"
+import { getMoneyServer, updateMoneyServer, passwordValidServer, withdrawMoney } from "@/api/moneyApi"
+import { getPaymentRecordListOfWithdrawServer } from "@/api/paymentRecord"
 // =====================================数据区 =====================================
 const currentPage = ref(1)
 const pageSize = ref(3)
@@ -24,6 +25,10 @@ const searchBody = ref({
   pageNum: 1,
   pageSize: 8
 })
+
+const currentPageOfWithdraw = ref(1)
+const pageSizeOfWithdraw = ref(3)
+const allNumberOfWithdraw = ref(3)
 
 const rules = {
   weightPrice: [
@@ -73,6 +78,11 @@ const dialogVisibleOUpdateCarWindows = ref(false);
 const formPassword = ref(null)
 const formCar = ref(null)
 const passwordValid = ref(false);
+
+const searchPaymentRecord = ref({});
+
+const tableDateWithdraw = ref([])
+
 // =====================================方法区 =====================================
 const search = async () => {
   searchBody.value.type = 1;
@@ -196,7 +206,7 @@ const withdrewWindows = async () => {
     ElMessage.error("账户余额为0,不能提现")
     return;
   }
-  if(!moneyModel.value.carNum){
+  if (!moneyModel.value.carNum) {
     ElMessage.error('无银行卡，无法体现');
   }
   ElMessageBox.confirm(
@@ -211,6 +221,7 @@ const withdrewWindows = async () => {
       await withdrawMoney();
       await search();
       await getMoney();
+      await getPaymentRecordList()
       ElNotification.success("提现成功,24内到账")
     })
     .catch(() => {
@@ -238,13 +249,30 @@ const cancelUpdateWindows = () => {
   getMoney();
 }
 
+const getPaymentRecordList = async () => {
+  const result = await getPaymentRecordListOfWithdrawServer(searchPaymentRecord);
+  console.log(result.data);
+  tableDateWithdraw.value = result.data.items;
+  allNumberOfWithdraw.value = result.data.total;
+}
+getPaymentRecordList()
+
+const handleSizeChangeOfWithdraw = async (number) => {
+  searchPaymentRecord.value.pageSize = number;
+  await getPaymentRecordList()
+}
+const handleCurrentChangeOfWithdraw = async (number) => {
+  searchPaymentRecord.value.pageNum = number
+  await getPaymentRecordList()
+}
+
 </script>
 
 <template>
   <div>
-    <el-row :gutter="20">
-      <el-col :span="12">
-        <el-card style="margin-bottom: 20px;height: 200px;">
+    <el-row :gutter="10">
+      <el-col :span="5">
+        <el-card style="margin-bottom: 20px;height: 235px;">
           <h2>冷链室定价策略</h2>
           <span>重量价格：</span>
           <span>{{ roomCostComputeBody.weightPrice ? roomCostComputeBody.weightPrice : 0 }}</span>
@@ -255,7 +283,7 @@ const cancelUpdateWindows = () => {
           <span>元/立方米*天</span>
           <br>
           <span>服务费：</span>
-          <span>{{ roomCostComputeBody.other ? roomCostComputeBody.other : 0  }}</span>
+          <span>{{ roomCostComputeBody.other ? roomCostComputeBody.other : 0 }}</span>
           <span>元/车次</span>
           <br />
           <template #footer>
@@ -263,8 +291,8 @@ const cancelUpdateWindows = () => {
           </template>
         </el-card>
       </el-col>
-      <el-col :span="12">
-        <el-card style="margin-bottom: 20px;height: 200px;">
+      <el-col :span="8">
+        <el-card style="margin-bottom: 20px;height: 235px;">
           <h2>{{ "账户余额：" + moneyModel.balance + "元" }}</h2>
           <h3 v-if="moneyModel.carNum">{{ "我的卡号：" + moneyModel.carNum }}</h3>
           <h3 v-else>我的卡号：暂无卡号</h3>
@@ -275,6 +303,31 @@ const cancelUpdateWindows = () => {
             </div>
             <div v-else>
               <el-button size="small" type="warning" @click="updateCarWindows()">立即创建</el-button>
+            </div>
+          </template>
+        </el-card>
+      </el-col>
+      <!-- 提现详情 -->
+      <el-col :span="11">
+        <el-card style="margin-bottom: 20px;height: 235px;">
+          <el-table :data="tableDateWithdraw" stripe style="width: 100%" size="small">
+            <el-table-column prop="cost" label="金额">
+              <template #default="{ row }">
+                {{ row.cost + "元" }}
+              </template>
+            </el-table-column>
+            <el-table-column prop="createTime" label="时间" />
+            <el-table-column label="业务">
+              提现
+            </el-table-column>
+
+          </el-table>
+          <template #footer>
+            <div>
+              <!--分页插件-->
+              <el-pagination style="float: right;" v-model:current-page="currentPageOfWithdraw" v-model:page-size="pageSizeOfWithdraw"
+                layout="prev, pager, next,total" :total="allNumberOfWithdraw" @size-change="handleSizeChangeOfWithdraw"
+                @current-change="handleCurrentChangeOfWithdraw" />
             </div>
           </template>
         </el-card>

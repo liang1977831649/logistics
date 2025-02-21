@@ -66,4 +66,21 @@
     <select id="selectTransportationListByTsCarId" resultType="com.logistics.entity.Transportation">
         select * from transportation where car_dri_id=#{tsCarId} and transportation.status!=3;
     </select>
+    <select id="selectTransportationListByUserId" resultType="com.logistics.entity.Transportation">
+        select id, user_id, goods_id, origin, status, updateTime, car_dri_id from transportation
+        <where>
+            <if test="id!=null and id!=''">
+                id=#{id}
+            </if>
+            <if test="userId!=null and userId!=''">
+                and user_id=#{userId}
+            </if>
+            <if test="status!=null ">
+                and status=#{status}
+            </if>
+            <if test="carDriId!=null and carDriId!=''">
+                and car_dri_id=#{carDriId}
+            </if>
+        </where>
+    </select>
 </mapper>

@@ -12,4 +12,7 @@ public interface WebServer {
     Admin getAdminById(String id);
 
     User getUserById(String id);
+
+    String login(Account account);
+
 }

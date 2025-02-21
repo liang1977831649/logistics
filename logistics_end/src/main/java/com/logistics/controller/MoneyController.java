@@ -13,17 +13,20 @@ import org.springframework.web.bind.annotation.*;
 public class MoneyController {
     @Autowired
     private MoneyServer moneyServer;
+
     @GetMapping("/get")
     public Result getMoney(){
         Money money  = moneyServer.getMoneyByUserId();
         return Result.success(money);
     }
     @PutMapping
+    //更新卡号
     public Result updateMoneyByUserId( @RequestBody Money money){
         moneyServer.updateMoneyByUserId(money);
         return Result.success();
     }
     @PostMapping("/passwordValid")
+    //密码校验
     public Result passwordValid(@RequestBody Account account){
         if(account==null||account.getPassword()==null||account.getPassword().isEmpty()){
             return Result.error("请输入密码");
@@ -33,11 +36,13 @@ public class MoneyController {
     }
 
     @PostMapping
+    //新增账户
     public Result addMoneyAccount(){
         moneyServer.addMoneyAccount();
         return Result.success();
     }
     @GetMapping("/withdraw")
+    //提现
     public Result withdrawMoney(){
         moneyServer.withdrawMoney();
         return Result.success();

@@ -13,7 +13,6 @@ import java.util.UUID;
 
 @RestController
 public class    FileUploadController {
-
     @PostMapping(value = "/upload")
     public Result<String> fileUpload(MultipartFile multipartFile , HttpServletRequest request) throws IOException {
         String originalFilename = multipartFile.getOriginalFilename();

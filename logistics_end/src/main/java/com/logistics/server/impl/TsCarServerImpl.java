@@ -278,6 +278,7 @@ public class TsCarServerImpl implements TsCarServer {
         goodsPageBean.setTotal((int) page.getTotal());
         return goodsPageBean;
     }
+    //如果该tsCar车没有挂有任何运输配送子单，就设置状态为1
     @Transactional
     public void setTsCarStatusToOneForTransportation(TsCar tsCar){
         List<Transportation> transportationList = transportationMapper.selectTransportationByTsCarId(tsCar.getId());
@@ -300,6 +301,7 @@ public class TsCarServerImpl implements TsCarServer {
         }
     }
     @Transactional
+    //将司机和冷链车的状态设置为1
     public void setTsCarStatusToOneCommon(TsCar tsCar){
         Driver driverById = new Driver();
         driverById.setId(tsCar.getDriverId());

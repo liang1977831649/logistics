@@ -5,6 +5,7 @@ import com.logistics.entity.Result;
 import com.logistics.entity.RoomCost;
 import com.logistics.server.RoomCostServer;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -15,7 +16,7 @@ public class RoomCostController {
     @Autowired
     private RoomCostServer roomCostServer;
     @GetMapping("/list")
-    public Result getList(Integer pageNum, Integer pageSize, String deliId, String status,String goodsName,String userId){
+    public Result getList(Integer pageNum, Integer pageSize, String deliId, Integer status,String goodsName,String userId){
         if(pageNum==null){
             pageNum=1;
         }
@@ -27,6 +28,7 @@ public class RoomCostController {
         return Result.success(roomCostPageBean);
     }
     @PutMapping
+    @PreAuthorize("@ex.verificationHandler(0)")
     public Result updateRoomCost(@RequestBody RoomCost roomCost){
         roomCostServer.updatePriceRoomCost(roomCost);
         return Result.success();
@@ -39,6 +41,7 @@ public class RoomCostController {
     }
 
     @GetMapping("/incomeLastDay")
+    @PreAuthorize("@ex.verificationHandler(0)")
     public Result getInComeLastDay(){
         List<RoomCost> roomCostList = roomCostServer.InComeLastDay();
         return Result.success(roomCostList);

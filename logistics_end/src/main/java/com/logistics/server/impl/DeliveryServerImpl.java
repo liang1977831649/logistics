@@ -185,6 +185,9 @@ public class DeliveryServerImpl implements DeliveryServer {
         if (delivery.getStatus() != 3) {
             throw new RuntimeException("该订单为抵达，不可收货");
         }
+        if(delivery.getDepartTime()==null){
+            throw new RuntimeException("无发车时间，不可收货");
+        }
 
         //业务一：修改状态
         delivery.setStatus(4);

@@ -28,4 +28,5 @@ public interface DeliveryMapper {
 
     List<Delivery> selectDeliveryByTsCarIdLimitStatusTow(String tsCarId);
 
+    List<Delivery> selectDeliveryByUserId(String id,String userId,String goodsId,Integer status,String carDriId);
 }

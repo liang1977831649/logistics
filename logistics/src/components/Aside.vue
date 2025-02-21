@@ -12,14 +12,16 @@ import {Magnet,
      Avatar, 
      HomeFilled,
      UserFilled,
-     User,House,
+     User,
+     House,
      Watermelon,
      Connection,
      CirclePlus,
      Goods,
      Paperclip,
      Money,
-     CircleCheck} from '@element-plus/icons-vue'
+     CircleCheck,
+     Crop} from '@element-plus/icons-vue'
 //=======================数据区==========================
 //图标
 const iconList = shallowRef({
@@ -35,7 +37,8 @@ const iconList = shallowRef({
     "Goods":Goods,
     "Paperclip":Paperclip,
     "Money":Money,
-    "CircleCheck":CircleCheck
+    "CircleCheck":CircleCheck,
+    "Crop":Crop
 })
 // 回应了父类组件传过来的tabs
 const props = defineProps({

@@ -8,7 +8,7 @@ import useToken from "@/storage/tokenStorage"
 import { EluiChinaAreaDht } from 'elui-china-area-dht'
 import {updateServer} from "@/api/userApi"
 import {loadingUserInfoServer} from "@/api/userInfoApi.js"
-
+import {updateInfo} from "@/api/adminApi"
 //=========================================数据区=========================================
 const chinaData = new EluiChinaAreaDht.ChinaArea().chinaAreaflat;
 const user = userInfoServer();
@@ -68,8 +68,11 @@ const save = () => {
     .then(async () => {
       form.value.validate(async valid => {
         if (valid) {
-          console.log("userModel.value=", userModel.value);
-          await updateServer(userModel)
+          if(user.userInfo.role==1){
+            await updateServer(userModel);
+          }else{
+            await updateInfo(userModel);
+          }
           const result=await loadingUserInfoServer();
           user.userInfo=result.data
           ElMessage.success("修改成功")
@@ -111,7 +114,7 @@ const onChange = (e) => {
           <el-input v-model="userModel.name" />
         </el-form-item>
 
-        <el-form-item label="电话" prop="phone" v-if="user.userInfo.role==1">
+        <el-form-item label="电话" prop="phone" >
           <el-input type="number" v-model="userModel.phone" />
         </el-form-item>
 

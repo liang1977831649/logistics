@@ -1,13 +1,17 @@
 package com.logistics.entity;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.alibaba.fastjson.annotation.JSONField;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import lombok.Data;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+
+import java.util.Collection;
+import java.util.List;
 
 @Data
-public class Account {
+public class Account implements UserDetails {
     @NotNull
     @Pattern(regexp = "\\S{6,10}",groups = Register.class)
     private String id;
@@ -21,6 +25,51 @@ public class Account {
     private String area;
     @NotNull(groups = {Register.class,Update.class})
     private String areaId;
+
+    @JSONField(serialize = false)
+    private List<GrantedAuthority> grantedAuthorities;
+
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        //if(grantedAuthorities!=null){
+        //    return grantedAuthorities;
+        //}
+        //SimpleGrantedAuthority simpleGrantedAuthority = new SimpleGrantedAuthority(role.toString());
+        //grantedAuthorities=new ArrayList<>();
+        //grantedAuthorities.add(simpleGrantedAuthority);
+        //return grantedAuthorities;
+        return null;
+    }
+
+    @Override
+    public String getPassword() {
+        return password;
+    }
+
+    @Override
+    public String getUsername() {
+        return id;
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return true ;
+    }
+
 
     //检验分组
     //登陆的时候，不需要检验id的长度，也不需要检验地域为空，但是角色不能为空

@@ -110,7 +110,7 @@ public class TransportationServerImpl implements TransportationServer {
         //如果不是空，那就查看tsCar是否有其他单号
         List<Delivery> deliveryList = deliveryMapper.selectDeliveryByTsCarId(transportation.getCarDriId());
         if(!deliveryList.isEmpty()){
-            throw new RuntimeException("该订单下有配送子单，不可运输");
+            throw new RuntimeException("该订单下有配送子单，不可装配");
         }
 
         //业务二：装配业务

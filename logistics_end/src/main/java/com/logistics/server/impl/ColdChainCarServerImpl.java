@@ -48,7 +48,9 @@ public class ColdChainCarServerImpl implements ColdChainCarServer {
         if (coldChainCarById == null) {
             throw new RuntimeException("不存在该冷链车");
         }
-
+        if(coldChainCarById.getStatus()!=1&& coldChainCar.getWeight()!=null){
+            throw new RuntimeException("该冷链车状态不是空闲，不可修改容量");
+        }
 
         coldChainCarMapper.updateCar(coldChainCar);
     }

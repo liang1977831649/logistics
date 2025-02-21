@@ -31,7 +31,9 @@ instance.interceptors.response.use(
     if (err.response.status === 401) {
       ElMessage.error("登陆已过期");
       router.push("/login");
-    } else {
+    }else if(err.response.status===403){
+      ElMessage.error("您无权访问");
+    }else {
       ElMessage.error("服务器异常");
     }
     return Promise.reject(err);

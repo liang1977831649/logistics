@@ -16,3 +16,13 @@ export const getPaymentRecordListServer= async (searchBody)=>{
      })
      return result;
 }
+
+export const getPaymentRecordListOfWithdrawServer= async (searchBody)=>{
+    const result=await request.get("/paymentRecord/listForWithdraw",{
+        params:{
+            pageNum:searchBody.value.pageNum,
+            pageSize:searchBody.value.pageSize,
+        }
+     })
+     return result;
+}
